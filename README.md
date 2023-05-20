@@ -5,11 +5,19 @@
 
 ## Features
 
+- [] Auto fill of application fields
+  - User has to click on a field themselves, and then it fills it in.
+  - One can be done with just basic js by looking at the id of the input and then filling it in with the data from the resume
 - [] Auto-complete entire job application on any website.
+  - This is using AI to login, save that data, go to application page, recognize the form fields, fill them out, know that we can click next page, and you don't do anything.
 - [] Parse Resume
 - [] Resume Builder: Asks questions about your experience and helps create a Resume
+  - [] It asks you questions, gives you options to fill in, and then it creates a resume for you
+  - [] Predicts bullet points, based on your experience
 - [] Creating custom resumes for each individual job application
+  - [] You paste in the requirements for the job and it helps translate all of your experience into the language of the job requirements
 - [] Easy creation of cover letters
+  - [] Similar to creating the custom resume, but for cover letters. Paste in job description, it can fill out a cover letter for you.
 - [] Resume embellisher: Adds keywords to your resume to make it more likely to be selected by the ATS
 - [] Keeps track of what you've applied to. Then you can see how long its been since you applied, "have you heard back from them",
 - [] Auto creates sign in for job application websites and keeps track of those
@@ -17,8 +25,34 @@
 - [] Could crowdsource the salary ranges for roles and help people get paid more, like if they get hired after we could follow up and get details to help others
 - [] Could crowdsource the interview questions for roles and help people get hired more
 - [] [AD IDea] suggests services for helping get paid more (for better interviewing/negotiations), like levels.fyi does
+- [] Filling in same shit all the time, all the disability questions etc
 
 ## Flow
+
+# Priority Features
+
+1. Auto Fills\* entire page (not auto-complete)
+   - Parse a resume, use linkedin to import a resume, or fill out the basic resume questions
+   - Disability questionnare, h1b, etc should also be included
+     Steps:
+     a.
+     a. Uploading linkedin resume, parsing a resume, storing that data
+     b.
+2. Resume Builder
+   - Resume Embellisher (optional)
+3. Easy creation of cover letters
+   - _Relies on_: Resume Builder
+4. Creating Custom Resumes for each individual job application / role
+   - _Relies on_: Resume Builder
+5. Practice interview questionairre, give them feedback
+6. If someone got a new job, crowdsource the salary range, offers, job titles, etc to help empower jobbers,
+   - Interview questions
+7. Implement Advertisements
+8. Track Job Descriptions (by ReqID?) across websites and check the posted salary ranges
+9. Keep track of job applications
+   - How long ago since you applied?
+10. Auto Create of Job Website login things
+11. Auto-Complete of entire job application on any website.
 
 # Potential Tools
 
