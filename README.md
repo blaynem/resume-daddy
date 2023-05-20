@@ -1,4 +1,27 @@
-# ResumeDaddy
+# Resume Daddy
+
+> An App + Chrome Extension that helps automate your job application process. Helping you along the entire way from finding jobs, to applying, to getting hired.
+> Do a money back guarantee and make it as seemless as possible, only charge when they get hired. Be as helpful as absolutely possible. Literally hemorrhage money to fall over yourself for the customer. Make everyone want to use it.
+> Advertisment: Pedro Pascal is over your shoulder or walking through the job application process with you. He's your Resume Daddy.
+
+## Features
+
+- [] Auto-complete entire job application on any website.
+- [] Parse Resume
+- [] Resume Builder: Asks questions about your experience and helps create a Resume
+- [] Creating custom resumes for each individual job application
+- [] Easy creation of cover letters
+- [] Resume embellisher: Adds keywords to your resume to make it more likely to be selected by the ATS
+- [] Keeps track of what you've applied to. Then you can see how long its been since you applied, "have you heard back from them",
+- [] Auto creates sign in for job application websites and keeps track of those
+- [] Track roles across websites and check the posted salary ranges for those roles
+- [] Could crowdsource the salary ranges for roles and help people get paid more, like if they get hired after we could follow up and get details to help others
+- [] Could crowdsource the interview questions for roles and help people get hired more
+- [] [AD IDea] suggests services for helping get paid more (for better interviewing/negotiations), like levels.fyi does
+
+## Flow
+
+-
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
 
