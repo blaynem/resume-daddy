@@ -11,13 +11,15 @@ datasource db {
 }
 
 model User {
-  id         String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   email      String
   first_name String
   last_name  String
+  // Order of job history, most recent first
+  job_order  String[]
 
   // ## Define Relations ##
-  interests Interestes[]
+  interests Interests[]
   jobs      Jobs[]
   skills    Skills[]
 
@@ -72,7 +74,7 @@ model Skills {
   @@schema("public")
 }
 
-model Interestes {
+model Interests {
   id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   user          User     @relation(fields: [user_id], references: [id])
   user_id       String
