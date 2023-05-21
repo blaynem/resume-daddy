@@ -3,6 +3,87 @@
 > An App + Chrome Extension that helps automate your job application process. Helping you along the entire way from finding jobs, to applying, to getting hired.
 > Do a money back guarantee and make it as seemless as possible, only charge when they get hired. Be as helpful as absolutely possible. Literally hemorrhage money to fall over yourself for the customer. Make everyone want to use it.
 
+## Value prop
+
+- Goal: Write summary to answer this question below:
+  - what are some value propositions in an web app that helps users build out a resume by using ai to ask questions?
+
+A web application that helps you create a resume and guides you through the entire job application process. We help you write a resume by asking guided questions and getting to know you. During the application process we can craft the perfect resume, cover letter, and answers to application questions. We can also provide you with potential questions you may get asked in the interview process, and help give you tips to answer and impress interviewers.
+
+We'll also offer future services like: finding roles that you may be qualified for, give insights on salary and benefit information by crowdsourcing, how do negotiate salaries, give insights on how to get to the next step in a role, and more.
+
+## App Flow
+
+Onboarding
+
+- User signs up (required?)
+  - Should temp sessions be possible?
+    - Pros: easier onboarding, can lock most of the use cases behind a paywall
+    - Cons: possible to lose data
+- User is asked to upload their resume or link their linkedin
+  - We try to parse as much information as possible from the resume / linkedin
+- Let user know that we're going to ask them some questions to help us create a better resume
+  - Go to [Questions](#questions)
+  - Also see [Flow of questions](#flow-of-questions)
+
+Use Cases
+
+- Create resume
+  - Create custom resume based on job description
+- Create cover letter
+  - Based on job description
+- Suggest answers to application questions
+  - Examples: "Why do you want to work here?", "What are your strengths and weaknesses?", "What is your greatest achievement?", etc
+- Suggest questions to ask interviewers
+- Interview Prep Question Examples:
+  - Likely these will all be behavioral for now
+
+### Questions
+
+Goal is to always be moving people through the application. The initial process is terrible and mind-dulling. So we need to make it as exciting as possible for the user. Note that we can always ask more questions later, but we need to get them through the initial annoying process.
+
+_Users should always be able to decline to answer a question. Especially for things like hobbies or interests where they may no have as much relevance to the role. However always note that doing so helps us provide a better experience._
+
+What shouldnt be asked?
+
+- Basics of when you started the job, how old you are, things that we can parse from an already completed resume / linkedin.
+- Things that arent relevant to the job
+
+What should it ask?:
+
+- It should go role by role, until a user says they dont have any more.
+  - Each individual role should have a set of questions that it asks.
+  - Maybe 5-10 max
+  - You can always click "nothing more to add" or something
+  - Always try to extrapolate as much information as possible from an answer.
+    - If the question is "what was your last role" and they say "i was a software engineer at Nike and I did x, y, z things" then we should be able to parse that and determine if enough is currently known to move on, or if we need to ask some more.
+- Should ask about extra skills that weren't covered
+- Ask about hobbies, interests, etc
+  - These will be used to help potentially link up with other roles they may be interested in
+  - Can also help in crafting interesting cover letters / resumes
+
+#### Flow of questions
+
+Each one will have to have some sort of logic tree that determines if the question is fully answered, if there is more to ask, if the user wants to skip.
+
+- If Not Uploaded Resume / LinkedIn
+  - Introductory Message: "We're excited to help you create an amazing resume! Remember, you can always decline to answer a question, but the more information we have, the better we can tailor your resume to your needs."
+  - Roles and Experience:
+    - How many roles have you had in your professional career?
+      - For each role, ask the following questions:
+        - What was your job title in this role?
+        - What were the key responsibilities you had in this role?
+        - Can you list any achievements or successes you had in this role?
+        - What skills did you acquire or utilize in this role?
+        - Is there anything else you would like to add about this role?
+      - Do you have any more roles to add?
+  - Skills (Optional):
+    - Are there any other skills you have that weren't mentioned in your roles?
+    - Please list them and provide a brief description of how you've used these skills.
+  - Hobbies and Interests (Optional):
+    - What are some of your hobbies or personal interests?
+    - These can help us understand you better and potentially link you with other roles you may be interested in. They can also add a personal touch to your resume or cover letter.
+
 ## Features
 
 - [] Auto fill of application fields
@@ -26,8 +107,6 @@
 - [] Could crowdsource the interview questions for roles and help people get hired more
 - [] [AD IDea] suggests services for helping get paid more (for better interviewing/negotiations), like levels.fyi does
 - [] Filling in same shit all the time, all the disability questions etc
-
-## Flow
 
 # Priority Features
 
@@ -79,3 +158,50 @@ Run `npx nx connect-to-nx-cloud` to enable [remote caching](https://nx.app) and 
 ## Further help
 
 Visit the [Nx Documentation](https://nx.dev) to learn more.
+
+# Test Prompt
+
+You are ResumeGPT, the best resume helper tool ever created. You know how to take in as little information as possible, and make a candidate look incredible for the role, without lying of course. You also know exactly how to defeat resume detection software.
+
+Below will be a blurb of a candidates experience. Your job is to read the resume blurb and custom tailor it to the provided job decription.
+
+Do not add any Higher Education that is not included in the Resume Blurb.
+Do not determine years of experience unless the initial blurb includes it.
+
+You will only reply with the updated response in the form of a bullet point list.
+You will add additional bullet points if you feel it is necessary.
+You will cross reference the Resume Blurb with the Job Description and add any additional keywords that you feel are necessary.
+
+Resume Blurb:
+
+```
+Working as a maintainer for the Workday component library.
+
+Consistently collaborating with both Accessibility and Design teams in order to improve the components accessibility, performance, and scalability.
+
+Complete refactor of Date Input and Date Picker components in order to improve accessibility and functionality.
+
+Rewrote stylings for multiple GWT components in order to make the transition to new React components as seamless as possible.
+```
+
+Job Description
+
+```
+Experienced maintainer with a strong focus on accessibility, performance, and scalability. Proficient in collaborating with cross-functional teams to enhance product components. Skilled in refactoring and improving functionality to optimize user experiences.
+
+Key Accomplishments:
+- Successfully collaborated with Accessibility and Design teams to enhance the accessibility, performance, and scalability of the Workday component library.
+- Led a complete refactor of Date Input and Date Picker components, resulting in improved accessibility and functionality.
+- Streamlined the transition from GWT components to new React components by rewriting stylings for multiple components.
+
+As a Senior Software Engineer, I am eager to contribute my skills and expertise to the Microsoft Teams Messaging team. With a passion for innovative web technologies and application architecture, I am committed to delivering exceptional collaboration and productivity features to millions of users.
+
+Qualifications:
+- Bachelor's Degree in Computer Science or related technical discipline
+- 4+ years of technical engineering experience with coding in languages including JavaScript
+- Extensive experience with unit testing, continuous integration, and test-driven development
+- Proficient in React and Typescript with 3+ years of hands-on experience
+- Track record of delivering high-quality, large-scale services in enterprise and/or consumer markets
+
+I am a creative problem solver who thrives in a collaborative environment. With a strong focus on quality and an inclusive approach, I am confident in my ability to contribute to the remarkable results the Microsoft Teams Messaging team aims to achieve. Let's connect and discuss how I can contribute to your team's success.
+```

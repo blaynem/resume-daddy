@@ -1,5 +1,6 @@
 {
   "name": "resume",
+  "description": "The web client for Resume Daddy",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/resume",
   "projectType": "application",
