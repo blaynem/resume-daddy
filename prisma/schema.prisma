@@ -18,9 +18,22 @@ model User {
   job_order  String[]
 
   // ## Define Relations ##
-  interests Interests[]
-  jobs      Jobs[]
-  skills    Skills[]
+  interests         Interests[]
+  jobs              Jobs[]
+  skills            Skills[]
+  resumePredictions ResumePredictions[]
+
+  @@schema("public")
+}
+
+model ResumePredictions {
+  id         String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user       User   @relation(fields: [user_id], references: [id])
+  user_id    String @db.Uuid
+  // Prompt is what we sent to the AI to predict.
+  prompt     String
+  // Prediction is what the AI returned in response.
+  prediction String
 
   @@schema("public")
 }

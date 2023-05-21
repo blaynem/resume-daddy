@@ -12,6 +12,25 @@ A web application that helps you create a resume and guides you through the enti
 
 We'll also offer future services like: finding roles that you may be qualified for, give insights on salary and benefit information by crowdsourcing, how do negotiate salaries, give insights on how to get to the next step in a role, and more.
 
+## Looking at
+
+MVP Flow w/ Minimal AI
+
+- signing up
+- answering all the questions
+  - Can probably upload from linkedin still
+  - If they dont upload we continue.
+  - We can still ask skills / interests
+- formatting all the answers into a resume template
+- (Needs AI) prompting ChatGPT to create the resume, create the cover letter, etc
+
+What AI is needed for:
+
+- Parsing Uploaded Resume
+- Creating Resume
+- Creating Cover Letter
+- Help answering application questions
+
 ## App Flow
 
 Onboarding
