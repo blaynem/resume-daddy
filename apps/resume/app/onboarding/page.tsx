@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import JobDetails from './job-details';
 
 type FormState = {
@@ -31,12 +31,21 @@ export default function Onboarding() {
     lastName: '',
     email: '',
   });
-  const [allJobDetails, setAllJobDetails] = useState<JobDetails[]>([
-    templateJobDetails,
-  ]);
-  const handleSubmit = (e: any) => {
+  const [allJobDetails, setAllJobDetails] = useState<JobDetails[]>([]);
+  useEffect(() => {
+    setAllJobDetails([templateJobDetails]);
+  }, []);
+  const onLinkedinImport = () => {
+    console.log('--onLinkedinImport');
+  };
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log('--submit', { ...formState, jobs: allJobDetails });
+    const submitted = await fetch('/api/user/onboarding', {
+      method: 'POST',
+      body: JSON.stringify({ ...formState, jobs: allJobDetails }),
+    });
+    console.log('--submitted-return', submitted);
   };
   return (
     <form autoComplete="on">
@@ -62,7 +71,7 @@ export default function Onboarding() {
               </label>
               <div className="mt-2">
                 <button
-                  type="button"
+                  onClick={onLinkedinImport}
                   className="rounded-md bg-indigo-600 text-white px-2.5 py-1.5 text-sm font-semibold shadow-sm hover:bg-indigo-400"
                 >
                   Import LinkedIn
