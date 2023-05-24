@@ -2,11 +2,14 @@
 import { useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { useSupabase } from './supabase-provider';
 
 const navigation = [{ name: 'Features', href: '#' }];
 
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { session } = useSupabase();
+  console.log('---session', session);
 
   return (
     <header className="absolute inset-x-0 top-0 z-50">
