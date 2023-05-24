@@ -2,8 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import JobDetails from './job-details';
+import supabase from '../clients/supabase';
 
-type FormState = {
+export type OnboardingSubmit = FormState & {
+  jobs: JobDetails[];
+};
+
+export type FormState = {
   firstName: string;
   lastName: string;
   email: string;
@@ -35,15 +40,28 @@ export default function Onboarding() {
   useEffect(() => {
     setAllJobDetails([templateJobDetails]);
   }, []);
-  const onLinkedinImport = () => {
+
+  const onLinkedinImport = async () => {
     console.log('--onLinkedinImport');
+    const { data, error } = await supabase.auth.signUp({
+      email: 'blayne.marjama@gmail.com',
+      password: 'example-password',
+      // options: {
+      //   emailRedirectTo: 'https://example.com/welcome',
+      // },
+    });
+    console.log('---test', data, error);
+    return;
   };
+
+  // TODO: Validate form and show errors
   const handleSubmit = async (e: any) => {
+    const submitState: OnboardingSubmit = { ...formState, jobs: allJobDetails };
+
     e.preventDefault();
-    console.log('--submit', { ...formState, jobs: allJobDetails });
     const submitted = await fetch('/api/user/onboarding', {
       method: 'POST',
-      body: JSON.stringify({ ...formState, jobs: allJobDetails }),
+      body: JSON.stringify(submitState),
     });
     console.log('--submitted-return', submitted);
   };
