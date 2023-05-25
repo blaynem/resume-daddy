@@ -1,8 +1,9 @@
-import './global.css';
 import { createServerComponentSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { headers, cookies } from 'next/headers';
-import SupabaseProvider from './supabase-provider';
+import './global.css';
 import Navbar from './navbar';
+import { Providers } from './providers';
+import SupabaseProvider from './supabase-provider';
 
 export const metadata = {
   title: 'Resume Daddy',
@@ -18,17 +19,17 @@ export default async function RootLayout({
     headers,
     cookies,
   });
-
   const {
     data: { session },
   } = await supabase.auth.getSession();
-
   return (
     <html lang="en">
       <body>
         <SupabaseProvider session={session}>
-          <Navbar />
-          {children}
+          <Providers>
+            <Navbar />
+            {children}
+          </Providers>
         </SupabaseProvider>
       </body>
     </html>

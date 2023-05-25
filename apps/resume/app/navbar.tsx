@@ -8,8 +8,12 @@ const navigation = [{ name: 'Features', href: '#' }];
 
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { session } = useSupabase();
-  console.log('---session', session);
+  const { session, supabase } = useSupabase();
+
+  const handleLogoutClick = async (e: any) => {
+    e.preventDefault();
+    await supabase.auth.signOut();
+  };
 
   return (
     <header className="absolute inset-x-0 top-0 z-50">
@@ -49,9 +53,16 @@ export default function Example() {
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-            Log in <span aria-hidden="true">&rarr;</span>
-          </a>
+          {session ? (
+            <button onClick={handleLogoutClick}>Logout</button>
+          ) : (
+            <a
+              href="#"
+              className="text-sm font-semibold leading-6 text-gray-900"
+            >
+              Log in <span aria-hidden="true">&rarr;</span>
+            </a>
+          )}
         </div>
       </nav>
       <Dialog

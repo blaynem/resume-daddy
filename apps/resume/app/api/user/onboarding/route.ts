@@ -1,42 +1,32 @@
 import { OnboardingSubmit } from '../../../onboarding/page';
 import prisma from '../../../clients/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-import { Prisma } from '@prisma/client';
 
-/**
- * TODO:
- *  - Validate request body
- *  -
- */
-export async function POST(request: NextRequest, res: NextResponse) {
+export type OnboardingSubmitResponse = {
+  id: string | null;
+  error?: string;
+};
+
+// Store data in the temo signup table
+export async function POST(
+  request: NextRequest
+): Promise<NextResponse<OnboardingSubmitResponse>> {
   try {
-    // TODO: Validate request body
-    const body = (await request.json()) as OnboardingSubmit;
-    const submitted = await prisma.user.create({
+    const onboardingData = (await request.json()) as OnboardingSubmit;
+    const submitted = await prisma.signup.create({
       data: {
-        email: body.email,
-        first_name: body.firstName,
-        last_name: body.lastName,
-        jobs: {
-          createMany: {
-            data: body.jobs.map((job, index) => ({
-              title: job.jobTitle,
-              description: job.description,
-              company_name: job.companyName,
-              user_job_order: index,
-              responsibilities: job.responsibilities,
-              temp_skills: job.skills,
-            })),
-          },
-        } as Prisma.jobsCreateNestedManyWithoutUserInput,
+        data: onboardingData,
       },
     });
-    console.log('---submitted', submitted);
-    return new Response(JSON.stringify(submitted));
+
+    return NextResponse.json({ id: submitted.id });
   } catch (error) {
     console.error(error);
-    return new Response(JSON.stringify({ error: 'There was an error.' }), {
-      status: 500,
-    });
+    return NextResponse.json(
+      { error: 'There was an error.', id: null },
+      {
+        status: 500,
+      }
+    );
   }
 }

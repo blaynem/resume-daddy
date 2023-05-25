@@ -11,7 +11,9 @@ datasource db {
 }
 
 model user {
-  id         String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  // This user id is from the auth schema, not the public schema.
+  user       users  @relation(fields: [id], references: [id])
+  id         String @id @db.Uuid
   email      String
   first_name String
   last_name  String
@@ -97,6 +99,19 @@ model interests {
   content       String?
   // What industries this Interest might be related to
   industry_tags String[]
+
+  @@schema("public")
+}
+
+// This table is used to store the raw resume data that we get from the user
+// This is only temporary so that we can get the user through sign up flow easier.
+// -- As all things "temporary", this will probably be here for a while. 5/24/2023
+model signup {
+  id             String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  data           Json      @db.Json
+  created_at     DateTime? @default(now())
+  completed      Boolean?  @default(false)
+  date_completed DateTime?
 
   @@schema("public")
 }
@@ -332,6 +347,9 @@ model users {
   identities                  identities[]
   mfa_factors                 mfa_factors[]
   sessions                    sessions[]
+
+  // This is for the public user profile
+  user user?
 
   @@index([instance_id])
   @@schema("auth")
