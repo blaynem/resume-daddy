@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useSupabase } from './supabase-provider';
+import Link from 'next/link';
 
 const navigation = [{ name: 'Features', href: '#' }];
 
@@ -56,12 +57,12 @@ export default function Example() {
           {session ? (
             <button onClick={handleLogoutClick}>Logout</button>
           ) : (
-            <a
-              href="#"
+            <Link
+              href="/signin"
               className="text-sm font-semibold leading-6 text-gray-900"
             >
               Log in <span aria-hidden="true">&rarr;</span>
-            </a>
+            </Link>
           )}
         </div>
       </nav>

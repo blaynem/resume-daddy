@@ -26,6 +26,11 @@ export type JobDetails = {
   skills: string;
 };
 
+const initialFormState: FormState = {
+  firstName: '',
+  lastName: '',
+  email: '',
+};
 const templateJobDetails: JobDetails = {
   jobTitle: '',
   companyName: '',
@@ -46,11 +51,7 @@ export default function Onboarding() {
   const { isOpen, onOpen: openModal, onClose } = useDisclosure();
   const initialRef = useRef<HTMLInputElement>(null);
   const [password, setPassword] = useState('');
-  const [formState, setFormState] = useState<FormState>({
-    firstName: '',
-    lastName: '',
-    email: '',
-  });
+  const [formState, setFormState] = useState<FormState>(initialFormState);
   const [allJobDetails, setAllJobDetails] = useState<JobDetails[]>([]);
   const [showSuccess, setShowSuccess] = useState(false);
   useEffect(() => {
@@ -98,6 +99,9 @@ export default function Onboarding() {
       // todo: Handle error
     }
     setShowSuccess(true);
+    setFormState(initialFormState);
+    setPassword('');
+    setAllJobDetails([templateJobDetails]);
     return;
   };
 
