@@ -38,7 +38,7 @@ export default function ConfirmEmail() {
         if (data.error) {
           throw new Error(data.error);
         }
-        return router.push('/');
+        return router.push('/dashboard');
       } catch (err) {
         return router.push('/');
       }

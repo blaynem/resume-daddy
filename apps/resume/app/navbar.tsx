@@ -4,16 +4,23 @@ import { Dialog } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useSupabase } from './supabase-provider';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 
-const navigation = [{ name: 'Features', href: '#' }];
+const navigation = [] as any[];
+// const navigation = [{ name: 'Features', href: '#' }];
 
 export default function Example() {
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { session, supabase } = useSupabase();
+  const pathname = usePathname();
+  // if on login page, dont show 'login' in navbar
+  const showLogin = pathname !== '/signin';
 
   const handleLogoutClick = async (e: any) => {
     e.preventDefault();
-    await supabase.auth.signOut();
+    supabase.auth.signOut();
+    router.push('/');
   };
 
   return (
@@ -23,14 +30,14 @@ export default function Example() {
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5">
+          <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Resume Daddy</span>
             <img
               className="h-8 w-auto"
               src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
               alt=""
             />
-          </a>
+          </Link>
         </div>
         <div className="flex lg:hidden">
           <button
@@ -44,27 +51,29 @@ export default function Example() {
         </div>
         <div className="hidden lg:flex lg:gap-x-12">
           {navigation.map((item) => (
-            <a
+            <Link
               key={item.name}
               href={item.href}
               className="text-sm font-semibold leading-6 text-gray-900"
             >
               {item.name}
-            </a>
+            </Link>
           ))}
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {session ? (
-            <button onClick={handleLogoutClick}>Logout</button>
-          ) : (
-            <Link
-              href="/signin"
-              className="text-sm font-semibold leading-6 text-gray-900"
-            >
-              Log in <span aria-hidden="true">&rarr;</span>
-            </Link>
-          )}
-        </div>
+        {showLogin && (
+          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+            {session ? (
+              <button onClick={handleLogoutClick}>Logout</button>
+            ) : (
+              <Link
+                href="/signin"
+                className="text-sm font-semibold leading-6 text-gray-900"
+              >
+                Log in <span aria-hidden="true">&rarr;</span>
+              </Link>
+            )}
+          </div>
+        )}
       </nav>
       <Dialog
         as="div"
@@ -75,14 +84,14 @@ export default function Example() {
         <div className="fixed inset-0 z-50" />
         <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
-            <a href="#" className="-m-1.5 p-1.5">
+            <Link href="/" className="-m-1.5 p-1.5">
               <span className="sr-only">Resume Daddy</span>
               <img
                 className="h-8 w-auto"
                 src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
                 alt=""
               />
-            </a>
+            </Link>
             <button
               type="button"
               className="-m-2.5 rounded-md p-2.5 text-gray-700"
@@ -96,22 +105,22 @@ export default function Example() {
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
                 {navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
               </div>
               <div className="py-6">
-                <a
-                  href="#"
+                <Link
+                  href="/signin"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
                   Log in
-                </a>
+                </Link>
               </div>
             </div>
           </div>

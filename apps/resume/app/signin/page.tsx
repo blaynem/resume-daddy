@@ -27,7 +27,7 @@ export default function Onboarding() {
 
     setPassword('');
     setEmail('');
-    router.push('/');
+    router.push('/dashboard');
   };
 
   return (

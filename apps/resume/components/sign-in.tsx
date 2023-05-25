@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 type SignInFormProps = {
   header?: string;
   email?: string;
@@ -119,12 +121,12 @@ export default function SignInForm({
         {!hideNote && (
           <p className="mt-10 text-center text-sm text-gray-500">
             Not a member?{' '}
-            <a
-              href="#"
+            <Link
+              href="/onboarding"
               className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
             >
-              Start a 14 day free trial
-            </a>
+              Sign up here
+            </Link>
           </p>
         )}
       </div>

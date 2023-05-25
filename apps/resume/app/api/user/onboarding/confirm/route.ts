@@ -1,16 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import prisma from '../../../../clients/prisma';
-import supabase from '../../../../clients/supabase';
 import type { ConfirmEmailPostBody } from '../../../../onboarding/confirm-email/page';
 import { OnboardingSubmit } from '../../../../onboarding/page';
-import {
-  createRouteHandlerSupabaseClient,
-  createServerComponentSupabaseClient,
-  createServerSupabaseClient,
-} from '@supabase/auth-helpers-nextjs';
+import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { cookies, headers } from 'next/headers';
-import { NextApiRequest, NextApiResponse } from 'next';
 
 /**
  * This route only goal is to fire once a user has successfully signed up.
@@ -34,7 +28,7 @@ export type ConfirmEmailPostResponse = {
   success?: string;
   error?: string;
 };
-export async function POST(req: NextRequest, res: NextApiResponse) {
+export async function POST(req: NextRequest, res: NextResponse) {
   const supabase = createRouteHandlerSupabaseClient({
     headers,
     cookies,
@@ -80,6 +74,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
               company_name: job.companyName,
               title: job.jobTitle,
               description: job.description,
+              responsibilities: job.responsibilities,
               user_job_order: index,
               temp_skills: job.skills,
             })),

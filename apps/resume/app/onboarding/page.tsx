@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from 'react';
 import JobDetails from './job-details';
-import supabase from '../clients/supabase';
 import Modal from '../../wrappers/modal';
 import { useDisclosure } from '@chakra-ui/react';
 import SignInForm from '../../components/sign-in';
 import { OnboardingSubmitResponse } from '../api/user/onboarding/route';
+import { useSupabase } from '../supabase-provider';
 
 export type OnboardingSubmit = FormState & {
   jobs: JobDetails[];
@@ -48,6 +48,7 @@ const templateJobDetails: JobDetails = {
 // - We then tell them to check their email for a verification link.
 // - Once they click the link we log them in and send them to the /welcome page.
 export default function Onboarding() {
+  const { supabase } = useSupabase();
   const { isOpen, onOpen: openModal, onClose } = useDisclosure();
   const initialRef = useRef<HTMLInputElement>(null);
   const [password, setPassword] = useState('');
@@ -150,7 +151,7 @@ export default function Onboarding() {
               </p>
 
               {/* TODO: Create a 'upload / paste' resume here */}
-              <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              {/* <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 <div className="col-span-full">
                   <label
                     htmlFor="photo"
@@ -171,7 +172,7 @@ export default function Onboarding() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             <div className="border-b border-gray-900/10 pb-12">
