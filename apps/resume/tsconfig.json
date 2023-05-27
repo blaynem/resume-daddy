@@ -16,16 +16,19 @@
         "name": "next"
       }
     ],
-    "types": ["jest", "node"]
+    "types": [
+      "jest",
+      "node"
+    ]
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",
     "**/*.jsx",
-    "../../apps/resume/.next/types/**/*.ts",
-    "../../dist/apps/resume/.next/types/**/*.ts",
-    "next-env.d.ts"
+    "next-env.d.ts",
+    "next.d.ts",
+    "../../apps/resume/.next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
