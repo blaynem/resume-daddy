@@ -8,6 +8,8 @@ export type JobsDeleteResponse = {
   error?: string;
 };
 
+// Note that when we delete a job, we only delete the user_id reference to it.
+//  - TODO: Anything that relies on the user_id + job_id should be taken care of as well.
 export async function DELETE(
   request: NextRequest
 ): Promise<NextResponse<JobsDeleteResponse>> {

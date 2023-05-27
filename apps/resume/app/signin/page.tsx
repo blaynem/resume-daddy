@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSupabase } from '../supabase-provider';
 import SignInForm from '../../components/sign-in';
 import { useRouter } from 'next/navigation';
@@ -12,7 +12,13 @@ export default function Onboarding() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { supabase } = useSupabase();
+  const { supabase, session } = useSupabase();
+
+  useEffect(() => {
+    if (session?.user) {
+      router.push('/dashboard');
+    }
+  }, [router, session]);
 
   const handleSubmit = async () => {
     const signup = await supabase.auth.signInWithPassword({

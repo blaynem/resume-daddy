@@ -55,7 +55,7 @@ export const EditableInput = ({
   const splitValue = value.split('\n') as string[];
 
   return (
-    <div className="mb-4">
+    <div className="mb-4 w-full">
       <div className="mb-0 flex">
         <p className="text-md font-semibold">{header}</p>
         {isEditMode && onDeleteClick && (
@@ -69,6 +69,8 @@ export const EditableInput = ({
       </div>
       {isEditMode ? (
         <FieldComponent
+          // Prevents the click from bubbling up to the parent button
+          onClick={(e) => e.stopPropagation()}
           type="text"
           className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
           value={value}
@@ -77,7 +79,7 @@ export const EditableInput = ({
       ) : (
         <ul className="px-3 py-1.5 h-min-6">
           {splitValue.map((line: string, index: number) => (
-            <li key={index} className="sm:text-sm sm:leading-6">
+            <li key={index} className="text-start sm:text-sm sm:leading-6">
               {line}
             </li>
           ))}

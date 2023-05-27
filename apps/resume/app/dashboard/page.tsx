@@ -11,6 +11,12 @@ import {
 } from '@heroicons/react/24/outline';
 import { IconType } from './editable-input';
 import { deepEqual } from '@libs/helpers';
+import {
+  Accordion,
+  AccordionButton,
+  AccordionItem,
+  AccordionPanel,
+} from '@chakra-ui/react';
 
 type JobsResponse = Database['public']['Tables']['jobs']['Row'];
 type JobsResponseInsert = Database['public']['Tables']['jobs']['Insert'];
@@ -168,8 +174,7 @@ export default function Dashboard() {
   };
 
   return (
-    <>
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+    <Accordion defaultIndex={[0]} allowMultiple className=" pt-6">
       <div className="absolute top-0 right-0">
         {!isEditMode ? (
           <>
@@ -199,12 +204,9 @@ export default function Dashboard() {
           </>
         )}
       </div>
-      <div className="p-4">
-        {tempJobsEdits.map((job, index) => (
-          <div
-            key={job.id}
-            className="mb-4 last:mb-0 last:border-b-0 border-b-2 border-indigo-100"
-          >
+      {tempJobsEdits.map((job, index) => (
+        <AccordionItem key={job.id}>
+          <AccordionButton className="pb-0">
             <EditableInput
               isEditMode={isEditMode}
               header="Job Title"
@@ -215,7 +217,9 @@ export default function Dashboard() {
               }}
               onDeleteClick={() => onJobDelete(job.id)}
             />
+          </AccordionButton>
 
+          <AccordionPanel className="pt-0">
             <EditableInput
               isEditMode={isEditMode}
               header="Company Name"
@@ -255,25 +259,24 @@ export default function Dashboard() {
                 editJob(index, newJob);
               }}
             />
-          </div>
-        ))}
-        {newJobs.map((job, index) => (
-          <div
-            key={index}
-            className="relative mb-4 last:mb-0 last:border-b-0 border-b-2 border-indigo-100"
-          >
+          </AccordionPanel>
+        </AccordionItem>
+      ))}
+      {newJobs.map((job, index) => (
+        <AccordionItem key={job.id}>
+          <AccordionButton key={index} className="pb-0 relative">
             <div className="absolute right-0 top-0">
               <IconButton
                 iconSrText="Cancel"
                 iconType={XMarkIcon as IconType}
                 onClick={() => onNewJobDelete(index)}
-                padding="p-0"
+                padding="p-0 pr-1 pt-1"
               />
               <IconButton
                 iconSrText="Save"
                 iconType={CheckIcon as IconType}
                 onClick={() => onNewJobSave(index)}
-                padding="p-0"
+                padding="p-0 pr-4 pt-1"
               />
             </div>
             <EditableInput
@@ -285,7 +288,9 @@ export default function Dashboard() {
                 onEditNewJob(index, newJob);
               }}
             />
+          </AccordionButton>
 
+          <AccordionPanel>
             <EditableInput
               isEditMode
               header="Company Name"
@@ -325,9 +330,9 @@ export default function Dashboard() {
                 onEditNewJob(index, newJob);
               }}
             />
-          </div>
-        ))}
-      </div>
-    </>
+          </AccordionPanel>
+        </AccordionItem>
+      ))}
+    </Accordion>
   );
 }
