@@ -9,24 +9,38 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      _jobsToskills: {
+        Row: {
+          A: string
+          B: string
+        }
+        Insert: {
+          A: string
+          B: string
+        }
+        Update: {
+          A?: string
+          B?: string
+        }
+      }
       interests: {
         Row: {
           content: string | null
           id: string
           industry_tags: string[] | null
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           content?: string | null
           id?: string
           industry_tags?: string[] | null
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           content?: string | null
           id?: string
           industry_tags?: string[] | null
-          user_id?: string
+          user_id?: string | null
         }
       }
       jobs: {
@@ -45,7 +59,7 @@ export interface Database {
           temp_skills: string
           title: string
           type: string | null
-          user_id: string
+          user_id: string | null
           user_job_order: number
         }
         Insert: {
@@ -63,7 +77,7 @@ export interface Database {
           temp_skills: string
           title: string
           type?: string | null
-          user_id: string
+          user_id?: string | null
           user_job_order: number
         }
         Update: {
@@ -81,7 +95,7 @@ export interface Database {
           temp_skills?: string
           title?: string
           type?: string | null
-          user_id?: string
+          user_id?: string | null
           user_job_order?: number
         }
       }
@@ -90,19 +104,19 @@ export interface Database {
           id: string
           prediction: string
           prompt: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           id?: string
           prediction: string
           prompt: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           id?: string
           prediction?: string
           prompt?: string
-          user_id?: string
+          user_id?: string | null
         }
       }
       signup: {
@@ -134,21 +148,21 @@ export interface Database {
           id: string
           industry_tags: string[] | null
           interpretation: string | null
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           content: string
           id?: string
           industry_tags?: string[] | null
           interpretation?: string | null
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           content?: string
           id?: string
           industry_tags?: string[] | null
           interpretation?: string | null
-          user_id?: string
+          user_id?: string | null
         }
       }
       user: {

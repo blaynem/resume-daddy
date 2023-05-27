@@ -28,9 +28,9 @@ model user {
 }
 
 model resumePredictions {
-  id         String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user       user   @relation(fields: [user_id], references: [id])
-  user_id    String @db.Uuid
+  id         String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user       user?   @relation(fields: [user_id], references: [id])
+  user_id    String? @db.Uuid
   // Prompt is what we sent to the AI to predict.
   prompt     String
   // Prediction is what the AI returned in response.
@@ -42,8 +42,8 @@ model resumePredictions {
 // TODO: Add more tags to break these down further in the future.
 model jobs {
   id                           String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user                         user      @relation(fields: [user_id], references: [id])
-  user_id                      String    @db.Uuid
+  user                         user?     @relation(fields: [user_id], references: [id])
+  user_id                      String?   @db.Uuid
   // What users literal job title is
   title                        String
   description                  String
@@ -77,8 +77,8 @@ model jobs {
 // TODO: Add more tags to break these down further in the future.
 model skills {
   id             String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user           user     @relation(fields: [user_id], references: [id])
-  user_id        String   @db.Uuid
+  user           user?    @relation(fields: [user_id], references: [id])
+  user_id        String?  @db.Uuid
   // Literal content of what user types
   content        String
   // What we interpreted they meant based on AI feedback
@@ -94,8 +94,8 @@ model skills {
 
 model interests {
   id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user          user     @relation(fields: [user_id], references: [id])
-  user_id       String   @db.Uuid
+  user          user?    @relation(fields: [user_id], references: [id])
+  user_id       String?  @db.Uuid
   content       String?
   // What industries this Interest might be related to
   industry_tags String[]

@@ -6,8 +6,7 @@ import { useSupabase } from './supabase-provider';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
-const navigation = [] as any[];
-// const navigation = [{ name: 'Features', href: '#' }];
+const navigation = [{ name: 'Dashboard', href: '/dashboard' }];
 
 export default function Example() {
   const router = useRouter();
