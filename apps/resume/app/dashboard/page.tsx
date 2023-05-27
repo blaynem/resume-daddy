@@ -112,6 +112,7 @@ export default function Dashboard() {
     // Make supabase upsert to update jobs
     const jobsUpsertResp = supabase.from('jobs').upsert(editedJobs);
     // make fetch to delete jobs
+    // TODO: IF the jobs delete fails we should handle the error
     const jobsDeleteResp = fetch('/api/user/jobs', {
       method: 'DELETE',
       body: JSON.stringify(deletedJobs.map((job) => job.id)),
