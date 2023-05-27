@@ -27,7 +27,6 @@ export default function Onboarding() {
     });
     if (signup.error) {
       // TODO: Handle errors
-      console.log('--signup.error', signup.error);
       return;
     }
 

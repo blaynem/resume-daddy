@@ -57,7 +57,6 @@ export default function Dashboard() {
         .from('jobs')
         .select()
         .order('user_job_order');
-      console.log('---things', data, error);
       if (data) {
         setDbJobs(data);
         setTempJobEdits(data);
@@ -162,7 +161,6 @@ export default function Dashboard() {
       console.error(error);
       return;
     }
-    console.log('--data', data);
     setNewJobs((prev) => prev.filter((_, i) => i !== index));
     // Align state with the new data
     setDbJobs((prev) => [...prev, data[0]]);

@@ -1,18 +1,11 @@
 'use client';
-import {
-  ChartBarIcon,
-  Cog6ToothIcon,
-  DocumentTextIcon,
-  HomeModernIcon,
-  UserIcon,
-} from '@heroicons/react/24/outline';
+import { DocumentTextIcon, HomeModernIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import React from 'react';
 import { usePathname } from 'next/navigation';
 
 export const Sidebar = () => {
   const pathname = usePathname();
-  console.log('---props', pathname);
   const links = [
     {
       href: '/dashboard',
