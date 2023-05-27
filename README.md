@@ -1,7 +1,65 @@
+# How to run
+
+Install Deps
+
+```bash
+yarn install
+```
+
+Start the Client
+
+```bash
+yarn nx run resume:serve
+```
+
+If you need to get latest DB Types:
+
+- Start Supabase CLI (Install docker if you dont have it)
+
+```bash
+# Start the supabase cli
+npx supabase start
+# Generate the types
+yarn run gen-types:supabase
+# Close the supabase cli
+npx supabase stop
+```
+
+- Generate Prisma Types
+
+```bash
+npx prisma generate
+```
+
 # Resume Daddy
 
 > An App + Chrome Extension that helps automate your job application process. Helping you along the entire way from finding jobs, to applying, to getting hired.
 > Do a money back guarantee and make it as seemless as possible, only charge when they get hired. Be as helpful as absolutely possible. Literally hemorrhage money to fall over yourself for the customer. Make everyone want to use it.
+
+## Jared question about Dashboard
+
+Dashboard Tabs:
+
+- Resume Info:
+  - Description: This is all of the information we have about the user that they have provided.
+  - Fields:
+    - Jobs info
+      - Title, Company Name, Responsibilities, Description, Achievements, Skills, etc
+    - Experience
+      - Extra experience that may not be relevant to a specific job
+    - Skills
+      - Extra skills that may not be relevant to a specific job
+    - Education
+      - Education info
+- Resumes
+  - Customized Resumes
+    - Description: These were created for the user based on job descriptions they have provided.
+- Cover Letters
+  - Default Cover Letter
+    - Either generated from a template, or from a user provided one.
+  - Customized Cover Letters
+- Job App Questions (Do we even care about this?)
+  - Description: These are a random assortment of questions users have been asked in job applications, and the answers we have provided for them.
 
 ## Value prop
 
