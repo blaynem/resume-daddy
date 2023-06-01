@@ -6,6 +6,7 @@ const predictRouter = Router();
 // Define routes
 predictRouter.get('/coverLetter', predictController.coverLetterPredict);
 predictRouter.get('/summary', predictController.summaryPredict);
+predictRouter.get('/resume', predictController.resumeRewritePredict);
 predictRouter.get(
   '/responsibilities',
   predictController.responsibilitiesPredict

@@ -1,8 +1,4 @@
-import { jobs, user } from '@prisma/client';
-import { z } from 'zod';
-import { HumanChatMessage, SystemChatMessage } from 'langchain/schema';
-import { LLMChain } from 'langchain/chains';
-import { FewShotPromptTemplate, PromptTemplate } from 'langchain/prompts';
+import { PromptTemplate } from 'langchain/prompts';
 import { StructuredOutputParser } from 'langchain/output_parsers';
 import { gptTurboModel } from '../clients/openAI';
 
