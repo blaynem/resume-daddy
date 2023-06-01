@@ -34,7 +34,7 @@ export const Sidebar = () => {
       className={`justify-around gap-0 border-t border-gray-200 bg-white/50 p-2.5 shadow-lg backdrop-blur-lg min-w-[64px] mb-auto flex-col rounded-lg border`}
     >
       {links.map((link) => (
-        <>
+        <div key={link.href}>
           <Link
             key={link.href}
             href={link.href}
@@ -53,7 +53,7 @@ export const Sidebar = () => {
           {link.insertBreak && (
             <div className="border-b border-gray-200 w-full"></div>
           )}
-        </>
+        </div>
       ))}
     </nav>
   );

@@ -58,11 +58,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
     if (!signupData.email || !user?.email || signupData.email !== user?.email) {
       throw new Error('Not authenticated');
     }
+
     // We know there is a signupId, and that there was an actual signup data entry
     // We know the session email == signup data email, and that the user is authenticated
 
-    // Create the user
-    const userCreate = await prisma.user.create({
+    await prisma.user.create({
       data: {
         id: user.id,
         email: signupData.email,
@@ -71,6 +71,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         jobs: {
           createMany: {
             data: signupData.jobs.map((job, index) => ({
+              user_id: user.id,
               company_name: job.companyName,
               title: job.jobTitle,
               description: job.description,
@@ -78,18 +79,15 @@ export async function POST(req: NextRequest, res: NextResponse) {
               user_job_order: index,
               temp_skills: job.skills,
             })),
-          } as Prisma.jobsCreateManyArgs,
+          },
         },
       },
     });
 
-    // console.log('---userCreate', userCreate);
-
-    const signupUpdate = await prisma.signup.update({
+    await prisma.signup.update({
       where: { id: requestData.signupId },
       data: { completed: true, date_completed: new Date() },
     });
-    // console.log('---signupUpdate', signupUpdate);
 
     return NextResponse.json({ success: 'success' });
   } catch (error) {

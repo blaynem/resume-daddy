@@ -1,6 +1,5 @@
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import React from 'react';
-import { useState } from 'react';
 
 export type IconType = React.ComponentType<React.ComponentProps<'svg'>>;
 export const IconButton = ({
@@ -47,7 +46,10 @@ export const EditableInput = ({
   onChange: (value: string) => void;
   onDeleteClick?: () => void;
 }) => {
-  const handleChange = (event: any) => {
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    event.stopPropagation();
     onChange(event.target.value);
   };
 

@@ -7,6 +7,7 @@ import { useDisclosure } from '@chakra-ui/react';
 import SignInForm from '../../components/sign-in';
 import { OnboardingSubmitResponse } from '../api/user/onboarding/route';
 import { useSupabase } from '../supabase-provider';
+import { useRouter } from 'next/navigation';
 
 export type OnboardingSubmit = FormState & {
   jobs: JobDetails[];
@@ -48,13 +49,21 @@ const templateJobDetails: JobDetails = {
 // - We then tell them to check their email for a verification link.
 // - Once they click the link we log them in and send them to the /welcome page.
 export default function Onboarding() {
-  const { supabase } = useSupabase();
+  const { supabase, session } = useSupabase();
+  const router = useRouter();
   const { isOpen, onOpen: openModal, onClose } = useDisclosure();
   const initialRef = useRef<HTMLInputElement>(null);
   const [password, setPassword] = useState('');
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [allJobDetails, setAllJobDetails] = useState<JobDetails[]>([]);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  useEffect(() => {
+    if (session) {
+      router.push('/dashboard');
+    }
+  }, [session, router]);
+
   useEffect(() => {
     setAllJobDetails([templateJobDetails]);
   }, []);
