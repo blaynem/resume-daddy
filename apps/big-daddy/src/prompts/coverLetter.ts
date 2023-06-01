@@ -59,7 +59,7 @@ export const shortCoverLetterPrompt = async ({
     .join('\n\n##\n\n');
   const coverLetterPrompt = `
 Write a cover letter for the job in the job description by matching qualifications from my resume to the job description provided.
-Keep the cover letter very short, three paragraphs at most. Keep the language relatively casual. Only include experiences that are directly included in my resume.
+Keep the cover letter very short, three paragraphs at most. Keep the language relatively casual. Only include experiences that are directly included in my resume context.
 
 ### 
 

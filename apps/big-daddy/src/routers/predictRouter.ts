@@ -5,6 +5,10 @@ const predictRouter = Router();
 
 // Define routes
 predictRouter.get('/coverLetter', predictController.coverLetterPredict);
-// resumeRouter.get('/:id', predictController.getUserById);
+predictRouter.get('/summary', predictController.summaryPredict);
+predictRouter.get(
+  '/responsibilities',
+  predictController.responsibilitiesPredict
+);
 
 export default predictRouter;

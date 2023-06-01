@@ -4,7 +4,9 @@ import { jobs, user } from '@prisma/client';
 import { Request, Response } from 'express';
 import type {
   PredictCoverLetterBody,
-  PredictCoverLetterResponse,
+  PredictResponse,
+  PredictResponsibilitiesBody,
+  PredictSummaryBody,
 } from '@apps/big-daddy/types';
 
 type userFetch = user & { jobs: jobs[] };
@@ -19,10 +21,14 @@ const parseResumeToString = (resume: userFetch) => {
 const predictController = {
   coverLetterPredict: async (
     req: Request<any, any, PredictCoverLetterBody>,
-    res: Response<PredictCoverLetterResponse>
+    res: Response<PredictResponse>
   ) => {
     try {
       const { jobDescription } = req.body;
+      if (!jobDescription) {
+        res.send({ error: 'No job description provided', data: null });
+        return;
+      }
       const userFetch = await prisma.user.findFirst({
         where: {
           email: 'blayne.marjama@gmail.com',
@@ -47,6 +53,18 @@ const predictController = {
       console.log('err', err);
       res.send({ error: 'Error API', data: null });
     }
+  },
+  summaryPredict: async (
+    req: Request<any, any, PredictSummaryBody>,
+    res: Response<PredictResponse>
+  ) => {
+    res.send({ data: 'not implemented' });
+  },
+  responsibilitiesPredict: async (
+    req: Request<any, any, PredictResponsibilitiesBody>,
+    res: Response<PredictResponse>
+  ) => {
+    res.send({ data: 'not implemented' });
   },
 };
 
