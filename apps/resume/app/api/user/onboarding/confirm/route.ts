@@ -35,25 +35,21 @@ export async function POST(req: NextRequest, res: NextResponse) {
   });
   try {
     const requestData = (await req.json()) as ConfirmEmailPostBody;
-    // console.log('---requestdata', requestData);
 
     // Get the signup data
     const signupFetch = await prisma.signup.findUnique({
       where: { id: requestData.signupId },
     });
-    // console.log('--signup', JSON.stringify(signupFetch));
 
     if (!signupFetch || !signupFetch.data || signupFetch.completed) {
       throw new Error('Signup not found');
     }
     const signupData = signupFetch.data as OnboardingSubmit;
-    // console.log('---signupEmail', signupData.email);
 
     // Get the current user from supabase auth
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    // console.log('---user', user);
 
     if (!signupData.email || !user?.email || signupData.email !== user?.email) {
       throw new Error('Not authenticated');
