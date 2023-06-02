@@ -78,13 +78,13 @@ export interface Database {
           company_name: string | null
           date_ended: string | null
           date_started: string | null
-          description: string
+          experience: string | null
           id: string
           industry_tags: string | null
           industry_titles: string[] | null
-          interpreted_description: string | null
-          interpreted_responsibilities: string | null
-          responsibilities: string | null
+          interpreted_experience: string | null
+          interpreted_summary: string | null
+          summary: string
           temp_skills: string
           title: string
           type: string | null
@@ -96,13 +96,13 @@ export interface Database {
           company_name?: string | null
           date_ended?: string | null
           date_started?: string | null
-          description: string
+          experience?: string | null
           id?: string
           industry_tags?: string | null
           industry_titles?: string[] | null
-          interpreted_description?: string | null
-          interpreted_responsibilities?: string | null
-          responsibilities?: string | null
+          interpreted_experience?: string | null
+          interpreted_summary?: string | null
+          summary: string
           temp_skills: string
           title: string
           type?: string | null
@@ -114,13 +114,13 @@ export interface Database {
           company_name?: string | null
           date_ended?: string | null
           date_started?: string | null
-          description?: string
+          experience?: string | null
           id?: string
           industry_tags?: string | null
           industry_titles?: string[] | null
-          interpreted_description?: string | null
-          interpreted_responsibilities?: string | null
-          responsibilities?: string | null
+          interpreted_experience?: string | null
+          interpreted_summary?: string | null
+          summary?: string
           temp_skills?: string
           title?: string
           type?: string | null
@@ -258,7 +258,7 @@ export interface Database {
     }
     Enums: {
       StatusType: "PENDING" | "ACCEPTED" | "REJECTED"
-      SuggestionType: "RESPONSIBILITY" | "JOB_SUMMARY"
+      SuggestionType: "EXPERIENCE" | "JOB_SUMMARY"
     }
     CompositeTypes: {
       [_ in never]: never

@@ -22,8 +22,8 @@ export type FormState = {
 export type JobDetails = {
   jobTitle: string;
   companyName: string;
-  description: string;
-  responsibilities: string;
+  summary: string;
+  experiences: string;
   skills: string;
 };
 
@@ -35,8 +35,8 @@ const initialFormState: FormState = {
 const templateJobDetails: JobDetails = {
   jobTitle: '',
   companyName: '',
-  description: '',
-  responsibilities: '',
+  summary: '',
+  experiences: '',
   skills: '',
 };
 
@@ -276,7 +276,7 @@ export default function Onboarding() {
               </h2>
               <p className="mt-1 text-sm leading-6 text-gray-600">
                 {`Collecting some infromation on your past experience. Below we will
-            dive into your role and responsibilities for each job you've had in
+            dive into your role and experiences for each job you've had in
             the past. Don't worry about formatting, feel free to explain like you would to a friend.`}
               </p>
               <JobDetails

@@ -31,6 +31,11 @@ npx supabase stop
 npx prisma generate
 ```
 
+## TODO:
+
+- Rename Description -> Summary
+- Rename Responsibilities -> Experience
+
 # Resume Daddy
 
 > An App + Chrome Extension that helps automate your job application process. Helping you along the entire way from finding jobs, to applying, to getting hired.

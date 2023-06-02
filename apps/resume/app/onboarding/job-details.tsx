@@ -76,44 +76,44 @@ export function JobQuestions({
         </div>
         <div className="col-span-full">
           <label
-            htmlFor={`description-${id}`}
+            htmlFor={`summary-${id}`}
             className="block text-sm font-medium leading-6 text-gray-900"
           >
-            Description
+            Summary
           </label>
           <div className="mt-2">
             <textarea
-              id={`description-${id}`}
-              name={`description-${id}`}
+              id={`summary-${id}`}
+              name={`summary-${id}`}
               rows={3}
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               onChange={handleInputChange}
-              value={details.description}
+              value={details.summary}
             />
           </div>
           <p className="mt-1 text-sm leading-6 text-gray-600">
-            Describe what you did in this role?
+            Summarize what you did in this role?
           </p>
         </div>
         <div className="col-span-full">
           <label
-            htmlFor={`responsibilities-${id}`}
+            htmlFor={`experiences-${id}`}
             className="block text-sm font-medium leading-6 text-gray-900"
           >
-            Responsibilities
+            Experiences
           </label>
           <div className="mt-2">
             <textarea
-              id={`responsibilities-${id}`}
-              name={`responsibilities-${id}`}
+              id={`experiences-${id}`}
+              name={`experiences-${id}`}
               rows={3}
               className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               onChange={handleInputChange}
-              value={details.responsibilities}
+              value={details.experiences}
             />
           </div>
           <p className="mt-1 text-sm leading-6 text-gray-600">
-            What sort of responsibilities did you have in this role?
+            What sort of experience did you have in this role?
           </p>
         </div>
         <div className="col-span-full">

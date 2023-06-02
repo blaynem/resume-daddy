@@ -5,11 +5,11 @@ import { Request, Response } from 'express';
 import type {
   PredictCoverLetterBody,
   PredictResponse,
-  PredictResponsibilitiesBody,
+  PredictExperiencesBody,
   PredictResumeBody,
   PredictSummaryBody,
 } from '@apps/big-daddy/types';
-import { responsibilitiesUpdatePrompt } from '../prompts/responsibilities';
+import { experienceUpdatePrompt } from '../prompts/experience';
 import { resumeRewritePrompt } from '../prompts/resumeRewrite';
 
 const temp_email = 'blayne.marjama@gmail.com';
@@ -18,7 +18,7 @@ const temp_user_id = '3bf7c478-23f6-473b-b5a2-620843034004';
 type userFetch = user & { jobs: jobs[] };
 const parseResumeToString = (resume: userFetch) => {
   const resumeString = resume.jobs.reduce((acc, job) => {
-    const jobString = `Title:${job.title}\nSummary:${job.description}\nResponsibilities:${job.responsibilities}\nSkills:${job.temp_skills}\n`;
+    const jobString = `Title:${job.title}\nSummary:${job.summary}\nExperience:${job.experience}\nSkills:${job.temp_skills}\n`;
     return acc + jobString;
   }, '');
   return resumeString;
@@ -93,8 +93,8 @@ const predictController = {
   ) => {
     res.send({ data: 'not implemented' });
   },
-  responsibilitiesPredict: async (
-    req: Request<any, any, PredictResponsibilitiesBody>,
+  experiencesPredict: async (
+    req: Request<any, any, PredictExperiencesBody>,
     res: Response<PredictResponse>
   ) => {
     try {
@@ -113,9 +113,9 @@ const predictController = {
         res.send({ error: 'Job not found', data: null });
         return;
       }
-      const answer = await responsibilitiesUpdatePrompt({
-        summary: jobFetch.description,
-        responsibilities: jobFetch.responsibilities,
+      const answer = await experienceUpdatePrompt({
+        summary: jobFetch.summary,
+        experiences: jobFetch.experience,
         jobDescription,
       });
       res.send({ data: answer });

@@ -7,9 +7,6 @@ const predictRouter = Router();
 predictRouter.get('/coverLetter', predictController.coverLetterPredict);
 predictRouter.get('/summary', predictController.summaryPredict);
 predictRouter.get('/resume', predictController.resumeRewritePredict);
-predictRouter.get(
-  '/responsibilities',
-  predictController.responsibilitiesPredict
-);
+predictRouter.get('/experiences', predictController.experiencesPredict);
 
 export default predictRouter;

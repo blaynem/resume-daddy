@@ -71,8 +71,8 @@ export default function Dashboard() {
     const addNewJob: JobsResponseInsert = {
       title: '',
       company_name: '',
-      description: '',
-      responsibilities: '',
+      summary: '',
+      experience: '',
       temp_skills: '',
       user_id: session?.user.id,
       user_job_order: tempJobsEdits.length,
@@ -229,21 +229,21 @@ export default function Dashboard() {
             />
             <EditableInput
               isEditMode={isEditMode}
-              header="Description"
-              value={job.description}
+              header="Summary"
+              value={job.summary}
               isTextarea
               onChange={(value) => {
-                const newJob = { ...job, description: value };
+                const newJob = { ...job, summary: value };
                 editJob(index, newJob);
               }}
             />
             <EditableInput
               isEditMode={isEditMode}
-              header="Responsibilities"
-              value={job.responsibilities || ''}
+              header="experience"
+              value={job.experience || ''}
               isTextarea
               onChange={(value) => {
-                const newJob = { ...job, responsibilities: value };
+                const newJob = { ...job, experience: value };
                 editJob(index, newJob);
               }}
             />
@@ -300,21 +300,21 @@ export default function Dashboard() {
             />
             <EditableInput
               isEditMode
-              header="Description"
-              value={job.description}
+              header="Summary"
+              value={job.summary}
               isTextarea
               onChange={(value) => {
-                const newJob = { ...job, description: value };
+                const newJob = { ...job, summary: value };
                 onEditNewJob(index, newJob);
               }}
             />
             <EditableInput
               isEditMode
-              header="Responsibilities"
-              value={job.responsibilities || ''}
+              header="experience"
+              value={job.experience || ''}
               isTextarea
               onChange={(value) => {
-                const newJob = { ...job, responsibilities: value };
+                const newJob = { ...job, experience: value };
                 onEditNewJob(index, newJob);
               }}
             />

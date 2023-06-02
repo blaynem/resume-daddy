@@ -24,11 +24,11 @@ import { gptTurboModel } from '../clients/openAI';
  *  - Format of the jobs:
  *    - Job title
  *    - Job Description (in bullet points)
- *    - Job Responsibilities (in bullet points)
+ *    - Job Experience (in bullet points)
  *    - Job skills (in bullet points)
  * 3. Send the resume to the chatbot
  *   - The chatbot will interpret:
- *    - `description` and `responsibilities`
+ *    - `jobDescription` and `Experience`
  *    - What `industry` the job is in
  *    - What other titles this job may be called in the given industry, `industry_titles`
  * 4. Receive the chatbot's response

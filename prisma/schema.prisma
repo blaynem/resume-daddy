@@ -46,7 +46,7 @@ model suggestedChanges {
   id                String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   user              user?          @relation(fields: [user_id], references: [id])
   user_id           String?        @db.Uuid
-  // Where the suggestion came from, is it a responsibility or a job summary?
+  // Where the suggestion came from, is it an experience or a job summary?
   type              SuggestionType
   job_id            String?
   original_content  String
@@ -69,7 +69,7 @@ enum StatusType {
 }
 
 enum SuggestionType {
-  RESPONSIBILITY
+  EXPERIENCE
   JOB_SUMMARY
 
   @@schema("public")
@@ -89,29 +89,29 @@ model resumePredictions {
 
 // TODO: Add more tags to break these down further in the future.
 model jobs {
-  id                           String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user                         user?     @relation(fields: [user_id], references: [id])
-  user_id                      String?   @db.Uuid
+  id                     String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user                   user?     @relation(fields: [user_id], references: [id])
+  user_id                String?   @db.Uuid
   // What users literal job title is
-  title                        String
-  description                  String
-  interpreted_description      String?
+  title                  String
+  summary                String
+  interpreted_summary    String?
   // Order of job history, higher number means more recent.
-  user_job_order               Int
+  user_job_order         Int
   // Optional company name
-  company_name                 String?
-  date_started                 DateTime?
-  date_ended                   DateTime?
-  achievements                 String?
-  responsibilities             String?
-  interpreted_responsibilities String?
+  company_name           String?
+  date_started           DateTime?
+  date_ended             DateTime?
+  achievements           String?
+  experience             String?
+  interpreted_experience String?
   // What the job title might also be known as. IE: Software Engineer, Software Developer, etc.
   // This is beneficial so that if the users job title is not the same as the industry standard,
   // they can still be found.
-  industry_titles              String[]
-  industry_tags                String?
+  industry_titles        String[]
+  industry_tags          String?
   // Type of job, full time, part time, contract, etc.
-  type                         String?
+  type                   String?
 
   // Temporary field while we figure out how to parse it
   temp_skills String

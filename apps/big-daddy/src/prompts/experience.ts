@@ -3,15 +3,15 @@ import { StructuredOutputParser } from 'langchain/output_parsers';
 import { gptTurboModel } from '../clients/openAI';
 
 /**
- * Creates a prompt template for updating a jobs responsibilities.
+ * Creates a prompt template for updating a jobs Experiences.
  */
-export const responsibilitiesUpdatePrompt = async ({
+export const experienceUpdatePrompt = async ({
   summary,
-  responsibilities,
+  experiences,
   jobDescription,
 }: {
   summary: string;
-  responsibilities: string;
+  experiences: string;
   jobDescription?: string;
 }) => {
   const contexts = [
@@ -20,15 +20,15 @@ export const responsibilitiesUpdatePrompt = async ({
       value: summary,
     },
     {
-      name: 'Job Responsibilities',
-      value: responsibilities,
+      name: 'Job Experiences',
+      value: experiences,
     },
   ]
     .map((context) => `${context.name}:\n${context.value}`)
     .join('\n\n##\n\n');
-  const responsibilitiesPrompt = `
-I want to write a resume Responsibilities section based on the STAR method.
-Help me improve my resumes Job Responsibilities by rephrasing and clarifying any information that is unclear.
+  const ExamplesPrompt = `
+I want to write a resume Experiences section based on the STAR method.
+Help me improve my resumes Job Experiences by rephrasing and clarifying any information that is unclear.
 Please embellish the details as much as you see fit, but only include experiences that are directly included in my the Contexts.
 
 ### 
@@ -40,12 +40,11 @@ ${contexts}
 `;
 
   const formatParser = StructuredOutputParser.fromNamesAndDescriptions({
-    answer:
-      'The updated Job Responsibilities for the job, separated by newlines.',
+    answer: 'The updated Job Experiences for the job, separated by newlines.',
   });
 
   const prompt = new PromptTemplate({
-    template: `${responsibilitiesPrompt}\n{format_instructions}`,
+    template: `${ExamplesPrompt}\n{format_instructions}`,
     inputVariables: [],
     partialVariables: {
       format_instructions: formatParser.getFormatInstructions(),
