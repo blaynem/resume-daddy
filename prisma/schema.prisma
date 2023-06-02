@@ -7,24 +7,22 @@ datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
-  schemas   = ["public", "auth"]
+  schemas   = ["auth", "public"]
 }
 
 model user {
-  // This user id is from the auth schema, not the public schema.
-  user       users  @relation(fields: [id], references: [id])
-  id         String @id @db.Uuid
-  email      String
-  first_name String
-  last_name  String
-
-  // ## Define Relations ##
+  /// This user id is from the auth schema, not the public schema.
+  id                String              @id @db.Uuid
+  email             String
+  first_name        String
+  last_name         String
+  audit_logs        audit_log[]
   interests         interests[]
   jobs              jobs[]
-  skills            skills[]
   resumePredictions resumePredictions[]
-  audit_logs        audit_log[]
+  skills            skills[]
   suggestedChanges  suggestedChanges[]
+  user              users               @relation(fields: [id], references: [id])
 
   @@schema("public")
 }
@@ -36,125 +34,105 @@ model audit_log {
   old_data   Json?
   new_data   Json?
   timestamp  DateTime? @default(now())
-  user       user?     @relation(fields: [user_id], references: [id])
   user_id    String?   @db.Uuid
+  user       user?     @relation(fields: [user_id], references: [id])
 
   @@schema("public")
 }
 
 model suggestedChanges {
   id                String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user              user?          @relation(fields: [user_id], references: [id])
   user_id           String?        @db.Uuid
-  // Where the suggestion came from, is it an experience or a job summary?
+  /// Where the suggestion came from, is it an experience or a job summary?
   type              SuggestionType
   job_id            String?
   original_content  String
   suggested_content String
   suggest_at        DateTime?      @default(now())
-  // If the user has accepted or rejected the suggestion
+  /// If the user has accepted or rejected the suggestion
   status            StatusType     @default(PENDING)
-  // reason why the user rejected the suggestion, if they did.
+  /// reason why the user rejected the suggestion, if they did.
   status_reason     String?
-
-  @@schema("public")
-}
-
-enum StatusType {
-  PENDING
-  ACCEPTED
-  REJECTED
-
-  @@schema("public")
-}
-
-enum SuggestionType {
-  EXPERIENCE
-  JOB_SUMMARY
+  user              user?          @relation(fields: [user_id], references: [id])
 
   @@schema("public")
 }
 
 model resumePredictions {
   id         String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user       user?   @relation(fields: [user_id], references: [id])
   user_id    String? @db.Uuid
-  // Prompt is what we sent to the AI to predict.
+  /// Prompt is what we sent to the AI to predict.
   prompt     String
-  // Prediction is what the AI returned in response.
+  /// Prediction is what the AI returned in response.
   prediction String
+  user       user?   @relation(fields: [user_id], references: [id])
 
   @@schema("public")
 }
 
-// TODO: Add more tags to break these down further in the future.
+/// TODO: Add more tags to break these down further in the future.
 model jobs {
   id                     String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user                   user?     @relation(fields: [user_id], references: [id])
   user_id                String?   @db.Uuid
-  // What users literal job title is
+  /// What users literal job title is
   title                  String
   summary                String
   interpreted_summary    String?
-  // Order of job history, higher number means more recent.
+  /// Order of job history, higher number means more recent.
   user_job_order         Int
-  // Optional company name
+  /// Optional company name
   company_name           String?
   date_started           DateTime?
   date_ended             DateTime?
   achievements           String?
   experience             String?
   interpreted_experience String?
-  // What the job title might also be known as. IE: Software Engineer, Software Developer, etc.
-  // This is beneficial so that if the users job title is not the same as the industry standard,
-  // they can still be found.
+  /// What the job title might also be known as. IE: Software Engineer, Software Developer, etc.
+  /// This is beneficial so that if the users job title is not the same as the industry standard,
+  /// they can still be found.
   industry_titles        String[]
   industry_tags          String?
-  // Type of job, full time, part time, contract, etc.
+  /// Type of job, full time, part time, contract, etc.
   type                   String?
-
-  // Temporary field while we figure out how to parse it
-  temp_skills String
-
-  // ## Define Relations ##
-  skills_used skills[]
+  /// Temporary field while we figure out how to parse it
+  temp_skills            String
+  user                   user?     @relation(fields: [user_id], references: [id])
+  skills_used            skills[]  @relation("jobsToskills")
 
   @@unique([user_id, user_job_order])
   @@schema("public")
 }
 
-// TODO: Add more tags to break these down further in the future.
+/// TODO: Add more tags to break these down further in the future.
 model skills {
   id             String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user           user?    @relation(fields: [user_id], references: [id])
   user_id        String?  @db.Uuid
-  // Literal content of what user types
+  /// Literal content of what user types
   content        String
-  // What we interpreted they meant based on AI feedback
+  /// What we interpreted they meant based on AI feedback
   interpretation String?
-  // What industries this skill might be related to
+  /// What industries this skill might be related to
   industry_tags  String[]
-
-  // ## Define Relations ##
-  related_jobs jobs[]
+  user           user?    @relation(fields: [user_id], references: [id])
+  related_jobs   jobs[]   @relation("jobsToskills")
 
   @@schema("public")
 }
 
 model interests {
   id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user          user?    @relation(fields: [user_id], references: [id])
   user_id       String?  @db.Uuid
   content       String?
-  // What industries this Interest might be related to
+  /// What industries this Interest might be related to
   industry_tags String[]
+  user          user?    @relation(fields: [user_id], references: [id])
 
   @@schema("public")
 }
 
-// This table is used to store the raw resume data that we get from the user
-// This is only temporary so that we can get the user through sign up flow easier.
-// -- As all things "temporary", this will probably be here for a while. 5/24/2023
+/// This table is used to store the raw resume data that we get from the user
+/// This is only temporary so that we can get the user through sign up flow easier.
+/// -- As all things "temporary", this will probably be here for a while. 5/24/2023
 model signup {
   id             String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   data           Json      @db.Json
@@ -165,7 +143,7 @@ model signup {
   @@schema("public")
 }
 
-// ############################## Auth Models (Supplied from Supabase no touchy!) ##############################
+/// ############################## Auth Models (Supplied from Supabase no touchy!) ##############################
 model audit_log_entries {
   instance_id String?   @db.Uuid
   id          String    @id @db.Uuid
@@ -396,12 +374,25 @@ model users {
   identities                  identities[]
   mfa_factors                 mfa_factors[]
   sessions                    sessions[]
-
-  // This is for the public user profile
-  user user?
+  user                        user?
 
   @@index([instance_id])
   @@schema("auth")
+}
+
+enum StatusType {
+  PENDING
+  ACCEPTED
+  REJECTED
+
+  @@schema("public")
+}
+
+enum SuggestionType {
+  EXPERIENCE
+  JOB_SUMMARY
+
+  @@schema("public")
 }
 
 enum aal_level {
