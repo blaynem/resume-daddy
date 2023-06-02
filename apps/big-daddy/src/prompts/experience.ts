@@ -26,7 +26,7 @@ export const experienceUpdatePrompt = async ({
   ]
     .map((context) => `${context.name}:\n${context.value}`)
     .join('\n\n##\n\n');
-  const ExamplesPrompt = `
+  const ExperiencesPrompt = `
 I want to write a resume Experiences section based on the STAR method.
 Help me improve my resumes Job Experiences by rephrasing and clarifying any information that is unclear.
 Please embellish the details as much as you see fit, but only include experiences that are directly included in my the Contexts.
@@ -44,7 +44,7 @@ ${contexts}
   });
 
   const prompt = new PromptTemplate({
-    template: `${ExamplesPrompt}\n{format_instructions}`,
+    template: `${ExperiencesPrompt}\n{format_instructions}`,
     inputVariables: [],
     partialVariables: {
       format_instructions: formatParser.getFormatInstructions(),

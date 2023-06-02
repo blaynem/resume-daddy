@@ -23,7 +23,7 @@ import { gptTurboModel } from '../clients/openAI';
  * 2. (PromptTemplate) Parse the resume into a format that can be used by the chatbot
  *  - Format of the jobs:
  *    - Job title
- *    - Job Description (in bullet points)
+ *    - Job Summary
  *    - Job Experience (in bullet points)
  *    - Job skills (in bullet points)
  * 3. Send the resume to the chatbot
