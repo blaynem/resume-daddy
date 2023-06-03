@@ -7,6 +7,7 @@ import { useDisclosure } from '@chakra-ui/react';
 import SignInForm from '../../components/sign-in';
 import { OnboardingSubmitResponse } from '../api/user/onboarding/route';
 import { useSupabase } from '../supabase-provider';
+import { useRouter } from 'next/navigation';
 
 export type OnboardingSubmit = FormState & {
   jobs: JobDetails[];
@@ -21,8 +22,8 @@ export type FormState = {
 export type JobDetails = {
   jobTitle: string;
   companyName: string;
-  description: string;
-  responsibilities: string;
+  summary: string;
+  experiences: string;
   skills: string;
 };
 
@@ -34,8 +35,8 @@ const initialFormState: FormState = {
 const templateJobDetails: JobDetails = {
   jobTitle: '',
   companyName: '',
-  description: '',
-  responsibilities: '',
+  summary: '',
+  experiences: '',
   skills: '',
 };
 
@@ -48,13 +49,21 @@ const templateJobDetails: JobDetails = {
 // - We then tell them to check their email for a verification link.
 // - Once they click the link we log them in and send them to the /welcome page.
 export default function Onboarding() {
-  const { supabase } = useSupabase();
+  const { supabase, session } = useSupabase();
+  const router = useRouter();
   const { isOpen, onOpen: openModal, onClose } = useDisclosure();
   const initialRef = useRef<HTMLInputElement>(null);
   const [password, setPassword] = useState('');
   const [formState, setFormState] = useState<FormState>(initialFormState);
   const [allJobDetails, setAllJobDetails] = useState<JobDetails[]>([]);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  useEffect(() => {
+    if (session) {
+      router.push('/dashboard');
+    }
+  }, [session, router]);
+
   useEffect(() => {
     setAllJobDetails([templateJobDetails]);
   }, []);
@@ -267,7 +276,7 @@ export default function Onboarding() {
               </h2>
               <p className="mt-1 text-sm leading-6 text-gray-600">
                 {`Collecting some infromation on your past experience. Below we will
-            dive into your role and responsibilities for each job you've had in
+            dive into your role and experiences for each job you've had in
             the past. Don't worry about formatting, feel free to explain like you would to a friend.`}
               </p>
               <JobDetails

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Prisma } from '@prisma/client';
 import prisma from '../../../../clients/prisma';
 import type { ConfirmEmailPostBody } from '../../../../onboarding/confirm-email/page';
 import { OnboardingSubmit } from '../../../../onboarding/page';
 import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { cookies, headers } from 'next/headers';
+import { Prisma } from '@prisma/client';
 
 /**
  * This route only goal is to fire once a user has successfully signed up.
@@ -35,61 +35,57 @@ export async function POST(req: NextRequest, res: NextResponse) {
   });
   try {
     const requestData = (await req.json()) as ConfirmEmailPostBody;
-    // console.log('---requestdata', requestData);
 
     // Get the signup data
     const signupFetch = await prisma.signup.findUnique({
       where: { id: requestData.signupId },
     });
-    // console.log('--signup', JSON.stringify(signupFetch));
 
     if (!signupFetch || !signupFetch.data || signupFetch.completed) {
       throw new Error('Signup not found');
     }
     const signupData = signupFetch.data as OnboardingSubmit;
-    // console.log('---signupEmail', signupData.email);
 
     // Get the current user from supabase auth
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    // console.log('---user', user);
 
     if (!signupData.email || !user?.email || signupData.email !== user?.email) {
       throw new Error('Not authenticated');
     }
+
     // We know there is a signupId, and that there was an actual signup data entry
     // We know the session email == signup data email, and that the user is authenticated
 
-    // Create the user
-    const userCreate = await prisma.user.create({
+    await prisma.user.create({
       data: {
         id: user.id,
-        email: signupData.email,
+        email: user.email,
         first_name: signupData.firstName,
         last_name: signupData.lastName,
         jobs: {
           createMany: {
-            data: signupData.jobs.map((job, index) => ({
-              company_name: job.companyName,
-              title: job.jobTitle,
-              description: job.description,
-              responsibilities: job.responsibilities,
-              user_job_order: index,
-              temp_skills: job.skills,
-            })),
-          } as Prisma.jobsCreateManyArgs,
+            data: signupData.jobs.map(
+              (job, index) =>
+                ({
+                  company_name: job.companyName,
+                  title: job.jobTitle,
+                  summary: job.summary,
+                  experience: job.experiences,
+                  user_job_order: index,
+                  temp_skills: job.skills,
+                } as Prisma.jobsCreateManyUserInput)
+            ),
+          } as Prisma.jobsCreateManyUserInputEnvelope,
         },
       },
     });
 
-    // console.log('---userCreate', userCreate);
-
-    const signupUpdate = await prisma.signup.update({
+    await prisma.signup.update({
       where: { id: requestData.signupId },
       data: { completed: true, date_completed: new Date() },
     });
-    // console.log('---signupUpdate', signupUpdate);
 
     return NextResponse.json({ success: 'success' });
   } catch (error) {
