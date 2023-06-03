@@ -24,6 +24,18 @@ export type PredictSummaryBody = {
   jobDescription?: string;
 };
 
+export type PredictQuestionBody = {
+  /**
+   *
+   */
+  jobDescription?: string;
+
+  /**
+   *
+   */
+  question: string;
+};
+
 export type PredictExperiencesBody = {
   /**
    * The job id that we want to suggest updates for.
