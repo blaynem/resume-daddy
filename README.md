@@ -31,10 +31,23 @@ npx supabase stop
 npx prisma generate
 ```
 
-## TODO:
+## Prisma Flow
 
-- Rename Description -> Summary
-- Rename Responsibilities -> Experience
+If we're working locally with a docker instance, we can run `npx prisma migrate dev` as this will update the docker database AND attempt to delete all data. Deploy script should run `npx prisma migrate deploy` as this will update the production database and not force delete all data.
+
+If you've already altered the schema.prisma file then you can run the following command to create a migration.
+
+```bash
+npx prisma migrate dev
+```
+
+If you need to write some custom SQL then you can run with the `--create-only` flag to create the draft migration, then you can edit the migration file then run the command again without the flag to apply the migration.
+
+```bash
+npx prisma migrate dev --create-only
+# Edit the migration file
+npx prisma migrate dev
+```
 
 # Resume Daddy
 
