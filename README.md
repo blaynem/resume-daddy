@@ -31,6 +31,29 @@ npx supabase stop
 npx prisma generate
 ```
 
+## Folder Structure
+
+Root
+
+- Apps
+  - big-daddy
+    - The backend Server
+  - resume
+    - The frontend client
+  - extension-daddy
+    - The future chrome extension client
+- docs
+  - Random documentation files
+- libs
+  - helpers
+    - random assortment of helpers to be used throughout entire project
+- prisma
+  - Where the prisma schema lives / migrations
+- scripts
+  - script for getting latest supabase types
+- supabase
+  - Just kinda needed there to use supabase CLI thats docker stuff
+
 ## Supabase Flow
 
 ```bash
