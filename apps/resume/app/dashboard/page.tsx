@@ -239,7 +239,7 @@ export default function Dashboard() {
             />
             <EditableInput
               isEditMode={isEditMode}
-              header="experience"
+              header="Experience"
               value={job.experience || ''}
               isTextarea
               onChange={(value) => {
@@ -310,7 +310,7 @@ export default function Dashboard() {
             />
             <EditableInput
               isEditMode
-              header="experience"
+              header="Experience"
               value={job.experience || ''}
               isTextarea
               onChange={(value) => {

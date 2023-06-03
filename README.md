@@ -31,7 +31,29 @@ npx supabase stop
 npx prisma generate
 ```
 
+## Supabase Flow
+
+```bash
+# Start the supabase cli
+npx supabase start
+# Generate the types
+yarn run gen-types:supabase
+# Close the supabase cli
+npx supabase stop
+```
+
 ## Prisma Flow
+
+**DO NOT RUN `prisma db push` IT IS PAIN** it deleted row level securities and is a pain to fix.
+
+Get latest DB schema from Supabase by introspecting the database.
+
+```bash
+# Pull the latest schema from supabase
+npx prisma db pull
+## Generate the ts files
+npx prisma generate
+```
 
 If we're working locally with a docker instance, we can run `npx prisma migrate dev` as this will update the docker database AND attempt to delete all data. Deploy script should run `npx prisma migrate deploy` as this will update the production database and not force delete all data.
 

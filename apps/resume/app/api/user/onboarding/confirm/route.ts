@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Prisma } from '@prisma/client';
 import prisma from '../../../../clients/prisma';
 import type { ConfirmEmailPostBody } from '../../../../onboarding/confirm-email/page';
 import { OnboardingSubmit } from '../../../../onboarding/page';
 import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { cookies, headers } from 'next/headers';
+import { Prisma } from '@prisma/client';
 
 /**
  * This route only goal is to fire once a user has successfully signed up.
@@ -61,21 +61,23 @@ export async function POST(req: NextRequest, res: NextResponse) {
     await prisma.user.create({
       data: {
         id: user.id,
-        email: signupData.email,
+        email: user.email,
         first_name: signupData.firstName,
         last_name: signupData.lastName,
         jobs: {
           createMany: {
-            data: signupData.jobs.map((job, index) => ({
-              user_id: user.id,
-              company_name: job.companyName,
-              title: job.jobTitle,
-              summary: job.summary,
-              experience: job.experiences,
-              user_job_order: index,
-              temp_skills: job.skills,
-            })),
-          },
+            data: signupData.jobs.map(
+              (job, index) =>
+                ({
+                  company_name: job.companyName,
+                  title: job.jobTitle,
+                  summary: job.summary,
+                  experience: job.experiences,
+                  user_job_order: index,
+                  temp_skills: job.skills,
+                } as Prisma.jobsCreateManyUserInput)
+            ),
+          } as Prisma.jobsCreateManyUserInputEnvelope,
         },
       },
     });
