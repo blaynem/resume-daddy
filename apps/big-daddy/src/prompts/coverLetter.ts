@@ -1,6 +1,7 @@
 import { PromptTemplate } from 'langchain/prompts';
 import { StructuredOutputParser } from 'langchain/output_parsers';
 import { gptTurboModel } from '../clients/openAI';
+import { createContextPrompt } from './helpers';
 
 /**
  * Structure of prompt:
@@ -45,45 +46,34 @@ export const shortCoverLetterPrompt = async ({
   jobDescription: string;
   resume: string;
 }) => {
-  const contexts = [
+  const context = createContextPrompt([
     {
       name: 'My Resume',
       value: resume,
     },
-  ]
-    .map((context) => `${context.name}:\n${context.value}`)
-    .join('\n\n##\n\n');
-  const coverLetterPrompt = `
+  ]);
+  const startingPrompt = `
 Write a cover letter for the job in the job description by matching qualifications from my resume to the job description provided.
-Keep the cover letter very short, three paragraphs at most. Keep the language relatively casual. Only include experiences that are directly included in my resume context.
-
-### 
-
-Contexts:
-${contexts}
-
-###
-`;
+Keep the cover letter very short, three paragraphs at most. Keep the language relatively casual. Only include experiences that are directly included in my resume context.`;
 
   const formatParser = StructuredOutputParser.fromNamesAndDescriptions({
     answer: 'The cover letter for the job description.',
   });
 
-  const question = `Write a cover letter for this Job Description:\n${jobDescription}`;
+  const endingPrompt = `Write a cover letter for this Job Description:\n${jobDescription}`;
 
-  const prompt = new PromptTemplate({
-    template: `${coverLetterPrompt}\n{format_instructions}\n{question}`,
-    inputVariables: ['question'],
+  const prompt = await new PromptTemplate({
+    template: `{startingPrompt}\n{context}\n{format_instructions}\n{endingPrompt}`,
+    inputVariables: ['startingPrompt', 'context', 'format_instructions'],
     partialVariables: {
+      startingPrompt,
+      context,
       format_instructions: formatParser.getFormatInstructions(),
+      endingPrompt,
     },
-  });
+  }).format({});
 
-  const formatPrompt = await prompt.format({
-    question,
-  });
-
-  const resp = await gptTurboModel.call(formatPrompt);
+  const resp = await gptTurboModel.call(prompt);
 
   const parsed = await formatParser.parse(resp);
   if (!parsed || !parsed.answer) {

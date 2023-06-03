@@ -8,8 +8,8 @@ import type {
   PredictExperiencesBody,
   PredictResumeBody,
   PredictSummaryBody,
-} from '@apps/big-daddy/types';
-import { experienceUpdatePrompt } from '../prompts/experience';
+} from '../../types';
+import { experienceUpdatePrompt } from '../prompts/experiences';
 import { resumeRewritePrompt } from '../prompts/resumeRewrite';
 
 const temp_email = 'blayne.marjama@gmail.com';
@@ -98,7 +98,9 @@ const predictController = {
     res: Response<PredictResponse>
   ) => {
     try {
-      const { jobId, jobDescription } = req.body;
+      const { jobId, user_id, jobDescription } = req.body;
+      console.log('---req.body---', req.body);
+      console.log('---req.headers---', req.headers);
       if (!jobId) {
         res.send({ error: 'No job id provided', data: null });
         return;
@@ -106,16 +108,16 @@ const predictController = {
       const jobFetch = await prisma.jobs.findFirst({
         where: {
           id: jobId,
-          user_id: temp_user_id,
+          user_id: user_id,
         },
       });
+      console.log('--jobfetch--', jobFetch);
       if (!jobFetch) {
         res.send({ error: 'Job not found', data: null });
         return;
       }
       const answer = await experienceUpdatePrompt({
-        summary: jobFetch.summary,
-        experiences: jobFetch.experience,
+        job: jobFetch,
         jobDescription,
       });
       res.send({ data: answer });
