@@ -1,9 +1,10 @@
 export type PredictResponse = {
-  data: string;
+  data: string | null;
   error?: string;
 };
 
 export type PredictCoverLetterBody = {
+  user_id: string;
   /**
    * The job description that we want to base our predictions on.
    */
@@ -11,6 +12,7 @@ export type PredictCoverLetterBody = {
 };
 
 export type PredictResumeBody = {
+  user_id: string;
   /**
    * The job description that we want to base our predictions on.
    */
@@ -24,6 +26,12 @@ export type PredictSummaryBody = {
   jobDescription?: string;
 };
 
+export type PredictQuestionBody = {
+  jobDescription: string;
+  question: string;
+  user_id: string;
+};
+
 export type PredictExperiencesBody = {
   /**
    * The job id that we want to suggest updates for.
@@ -32,7 +40,7 @@ export type PredictExperiencesBody = {
   /**
    * The user id that we want to base our predictions on.
    */
-  user_id;
+  user_id: string;
   /**
    * The job description that we want to base our predictions on.
    */

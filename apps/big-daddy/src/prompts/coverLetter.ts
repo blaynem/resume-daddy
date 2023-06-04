@@ -1,7 +1,6 @@
 import { PromptTemplate } from 'langchain/prompts';
 import { StructuredOutputParser } from 'langchain/output_parsers';
-import { gptTurboModel } from '../clients/openAI';
-import { createContextPrompt } from './helpers';
+import { callAndParsePrompt, createContextPrompt } from './helpers';
 
 /**
  * Structure of prompt:
@@ -56,6 +55,9 @@ export const shortCoverLetterPrompt = async ({
 Write a cover letter for the job in the job description by matching qualifications from my resume to the job description provided.
 Keep the cover letter very short, three paragraphs at most. Keep the language relatively casual. Only include experiences that are directly included in my resume context.`;
 
+  type QuestionAnswer = {
+    answer: string;
+  };
   const formatParser = StructuredOutputParser.fromNamesAndDescriptions({
     answer: 'The cover letter for the job description.',
   });
@@ -73,11 +75,11 @@ Keep the cover letter very short, three paragraphs at most. Keep the language re
     },
   }).format({});
 
-  const resp = await gptTurboModel.call(prompt);
-
-  const parsed = await formatParser.parse(resp);
-  if (!parsed || !parsed.answer) {
-    console.error('Failed to parse response from GPT-3', resp);
+  const parsed = await callAndParsePrompt<QuestionAnswer>({
+    prompt,
+    parserFn: (val) => formatParser.parse(val),
+  });
+  if (!parsed) {
     throw new Error('Failed to parse response from GPT-3');
   }
   return parsed.answer;

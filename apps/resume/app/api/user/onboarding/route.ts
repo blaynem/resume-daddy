@@ -1,5 +1,5 @@
 import { OnboardingSubmit } from '../../../onboarding/page';
-import prisma from '../../../clients/prisma';
+import prisma from '../../../../clients/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
 export type OnboardingSubmitResponse = {

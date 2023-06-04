@@ -2,8 +2,7 @@ import { z } from 'zod';
 import { PromptTemplate } from 'langchain/prompts';
 
 import { StructuredOutputParser } from 'langchain/output_parsers';
-import { gptTurboModel } from '../clients/openAI';
-import { createContextPrompt } from './helpers';
+import { callAndParsePrompt, createContextPrompt } from './helpers';
 import { jobs } from '@prisma/client';
 
 /**
@@ -30,15 +29,16 @@ export const experienceUpdatePrompt = async ({
 Help me improve my resumes Job Experiences by rephrasing and clarifying any information that is unclear.
 Please embellish the details as much as you see fit, but only include experiences that are directly included in my the Contexts.`;
 
-  const formatParser = StructuredOutputParser.fromZodSchema(
-    z.object({
-      experience: z
-        .string()
-        .describe('A newly rephrased experience entry')
-        .array()
-        .describe('The list of experiences that were rephrased'),
-    })
-  );
+  const questionAnswerFormat = z.object({
+    experience: z
+      .string()
+      .describe('A newly rephrased experience entry')
+      .array()
+      .describe('The list of experiences that were rephrased'),
+  });
+  type QuestionAnswer = z.infer<typeof questionAnswerFormat>;
+  const formatParser =
+    StructuredOutputParser.fromZodSchema(questionAnswerFormat);
 
   const prompt = await new PromptTemplate({
     template: `{startingPrompt}\n{context}\n{format_instructions}`,
@@ -58,13 +58,15 @@ Please embellish the details as much as you see fit, but only include experience
 
   // const resp = await gptTurboModel.call(prompt);
   // console.log('--resp--', resp);
-  return 'test';
+  // return 'test';
 
-  // const parsed = await formatParser.parse(resp);
-  // console.log('---parsed---', parsed);
-  // if (!parsed || !parsed.experience) {
-  //   console.error('Failed to parse response from GPT-3', resp);
-  //   throw new Error('Failed to parse response from GPT-3');
-  // }
-  // return parsed.experience.join('\n\n');
+  const parsed = await callAndParsePrompt<QuestionAnswer>({
+    prompt,
+    parserFn: (val) => formatParser.parse(val),
+  });
+  if (!parsed) {
+    throw new Error('Failed to parse response from GPT-3');
+  }
+
+  return parsed.experience.join('\n\n');
 };
