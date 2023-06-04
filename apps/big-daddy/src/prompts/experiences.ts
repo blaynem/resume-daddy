@@ -62,7 +62,7 @@ Please embellish the details as much as you see fit, but only include experience
 
   const parsed = await callAndParsePrompt<QuestionAnswer>({
     prompt,
-    parserFn: formatParser.parse,
+    parserFn: (val) => formatParser.parse(val),
   });
   if (!parsed) {
     throw new Error('Failed to parse response from GPT-3');

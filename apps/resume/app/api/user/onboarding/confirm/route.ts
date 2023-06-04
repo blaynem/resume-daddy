@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '../../../../clients/prisma';
+import prisma from '../../../../../clients/prisma';
 import type { ConfirmEmailPostBody } from '../../../../onboarding/confirm-email/page';
 import { OnboardingSubmit } from '../../../../onboarding/page';
 import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';

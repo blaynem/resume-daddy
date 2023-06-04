@@ -48,7 +48,7 @@ Only include experiences that are directly included in my resume context.`;
 
   const parsed = await callAndParsePrompt<QuestionAnswer>({
     prompt,
-    parserFn: formatParser.parse,
+    parserFn: (val) => formatParser.parse(val),
   });
   if (!parsed) {
     throw new Error('Failed to parse response from GPT-3');

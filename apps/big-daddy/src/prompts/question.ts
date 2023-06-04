@@ -21,7 +21,7 @@ export const questionAnswerPrompt = async ({
       value: resume,
     },
     {
-      name: 'Job Description',
+      name: 'New Job Description',
       value: jobDescription,
     },
     {
@@ -55,7 +55,7 @@ Please answer the question in the context of the job description and your resume
 
   const parsed = await callAndParsePrompt<QuestionAnswer>({
     prompt,
-    parserFn: formatParser.parse,
+    parserFn: (val) => formatParser.parse(val),
   });
   if (!parsed) {
     throw new Error('Failed to parse response from GPT-3');

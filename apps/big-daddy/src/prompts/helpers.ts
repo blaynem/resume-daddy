@@ -35,7 +35,8 @@ export const callAndParsePrompt = async <T>({
     const resp = await gptTurboModel.call(prompt);
     const parsed = (await parserFn(resp)) as T;
     if (!parsed) {
-      throw new Error('Failed to parse response from GPT-3');
+      console.error('Unable to parse response from GPT-3', parsed);
+      throw new Error('Error parsing in callAndParsePrompt.');
     }
     return parsed;
   } catch (e) {

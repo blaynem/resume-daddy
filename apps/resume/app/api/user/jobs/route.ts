@@ -1,4 +1,4 @@
-import prisma from '@apps/resume/app/clients/prisma';
+import prisma from '../../../../clients/prisma';
 import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { cookies, headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';

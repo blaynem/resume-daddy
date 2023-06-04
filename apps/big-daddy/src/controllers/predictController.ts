@@ -9,12 +9,10 @@ import type {
   PredictResumeBody,
   PredictSummaryBody,
   PredictQuestionBody,
-} from '../../types';
+} from '@libs/types/big-daddy';
 import { experienceUpdatePrompt } from '../prompts/experiences';
 import { resumeRewritePrompt } from '../prompts/resumeRewrite';
 import { questionAnswerPrompt } from '../prompts/question';
-
-const temp_email = 'blayne.marjama@gmail.com';
 
 type userFetch = user & { jobs: jobs[] };
 const parseResumeToString = (resume: userFetch) => {
@@ -26,10 +24,10 @@ const parseResumeToString = (resume: userFetch) => {
 };
 
 // TODO: Eventually we need to get the user from the supabase auth header
-const doUserFetch = async () => {
+const doUserFetch = async (id: string) => {
   return await prisma.user.findFirst({
     where: {
-      email: temp_email,
+      id: id,
     },
     include: {
       jobs: {
@@ -49,14 +47,14 @@ const predictController = {
     res: Response<PredictResponse>
   ) => {
     try {
-      const { jobDescription } = req.body;
+      const { jobDescription, user_id } = req.body;
       if (!jobDescription) {
         res
           .send({ error: 'No job description provided', data: null })
           .status(400);
         return;
       }
-      const userFetch = await doUserFetch();
+      const userFetch = await doUserFetch(user_id);
       const parsedResume = parseResumeToString(userFetch);
       const answer = await shortCoverLetterPrompt({
         jobDescription,
@@ -74,14 +72,14 @@ const predictController = {
   ) => {
     try {
       // TODO: Improve this prompt
-      const { jobDescription } = req.body;
+      const { jobDescription, user_id } = req.body;
       if (!jobDescription) {
         res
           .send({ error: 'No job description provided', data: null })
           .status(400);
         return;
       }
-      const userFetch = await doUserFetch();
+      const userFetch = await doUserFetch(user_id);
       const parsedResume = parseResumeToString(userFetch);
       const answer = await resumeRewritePrompt({
         jobDescription,
@@ -137,7 +135,7 @@ const predictController = {
     res: Response<PredictResponse>
   ) => {
     try {
-      const { jobDescription, question } = req.body;
+      const { jobDescription, question, user_id } = req.body;
       if (!jobDescription || !question) {
         // res.send if they are missing one of these params
         res
@@ -148,9 +146,13 @@ const predictController = {
           .status(400);
         return;
       }
-      const userFetch = await doUserFetch();
-      const parsedResume = parseResumeToString(userFetch);
+      const userFetch = await doUserFetch(user_id);
+      if (userFetch === null) {
+        res.send({ error: 'User not found', data: null }).status(400);
+        return;
+      }
 
+      const parsedResume = parseResumeToString(userFetch);
       const answer = await questionAnswerPrompt({
         jobDescription,
         resume: parsedResume,
