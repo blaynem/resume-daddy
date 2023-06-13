@@ -1,6 +1,8 @@
+import { z } from 'zod';
 import { PromptTemplate } from 'langchain/prompts';
 import { StructuredOutputParser } from 'langchain/output_parsers';
-import { callAndParsePrompt, createContextPrompt } from './helpers';
+import { createContextPrompt } from './helpers';
+import { PredictResponse } from '../predictinator';
 
 /**
  * Structure of prompt:
@@ -36,15 +38,46 @@ import { callAndParsePrompt, createContextPrompt } from './helpers';
  */
 
 /**
- * Creates a prompt template for creating a cover letter for a given job description.
+ * Each prompt file should have the following:
+ * 1. A prompt template
+ * 2. A parser function
+ * 3. The exported return type of the formatted prompt
  */
-export const shortCoverLetterPrompt = async ({
+
+const questionAnswerFormat = z.object({
+  answer: z.string().describe('The new cover letter.'),
+});
+
+type CoverLetterPredictResponse = z.infer<typeof questionAnswerFormat>;
+
+const predictionParser =
+  StructuredOutputParser.fromZodSchema(questionAnswerFormat);
+
+const coverLetterParsePrediction = (
+  predictResponse: string
+): PredictResponse => {
+  const parsed = predictionParser.parse(
+    predictResponse
+  ) as CoverLetterPredictResponse;
+
+  if (!parsed || !parsed.answer) {
+    return {
+      error: 'Failed to parse response from GPT-3',
+      prediction: null,
+    };
+  }
+  return {
+    prediction: parsed.answer,
+  };
+};
+
+const coverLetterPromptTemplate = async ({
   jobDescription,
   resume,
 }: {
   jobDescription: string;
   resume: string;
-}) => {
+}): Promise<string> => {
   const context = createContextPrompt([
     {
       name: 'My Resume',
@@ -55,13 +88,6 @@ export const shortCoverLetterPrompt = async ({
 Write a cover letter for the job in the job description by matching qualifications from my resume to the job description provided.
 Keep the cover letter very short, three paragraphs at most. Keep the language relatively casual. Only include experiences that are directly included in my resume context.`;
 
-  type QuestionAnswer = {
-    answer: string;
-  };
-  const formatParser = StructuredOutputParser.fromNamesAndDescriptions({
-    answer: 'The cover letter for the job description.',
-  });
-
   const endingPrompt = `Write a cover letter for this Job Description:\n${jobDescription}`;
 
   const prompt = await new PromptTemplate({
@@ -70,17 +96,15 @@ Keep the cover letter very short, three paragraphs at most. Keep the language re
     partialVariables: {
       startingPrompt,
       context,
-      format_instructions: formatParser.getFormatInstructions(),
+      format_instructions: predictionParser.getFormatInstructions(),
       endingPrompt,
     },
   }).format({});
 
-  const parsed = await callAndParsePrompt<QuestionAnswer>({
-    prompt,
-    parserFn: (val) => formatParser.parse(val),
-  });
-  if (!parsed) {
-    throw new Error('Failed to parse response from GPT-3');
-  }
-  return parsed.answer;
+  return prompt;
+};
+
+export const coverLetterPredict = {
+  promptTemplate: coverLetterPromptTemplate,
+  parsePrediction: coverLetterParsePrediction,
 };

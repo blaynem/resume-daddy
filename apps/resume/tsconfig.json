@@ -28,6 +28,7 @@
     "**/*.jsx",
     "next-env.d.ts",
     "next.d.ts",
+    "../../apps/resume/.next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

@@ -1,12 +1,42 @@
+import { z } from 'zod';
 import { PromptTemplate } from 'langchain/prompts';
 import { StructuredOutputParser } from 'langchain/output_parsers';
-import { gptTurboModel } from '../clients/openAI';
-import { callAndParsePrompt, createContextPrompt } from './helpers';
+import { createContextPrompt } from './helpers';
+import { PredictResponse } from '../predictinator';
+
+const questionAnswerFormat = z.object({
+  answer: z
+    .string()
+    .describe('The newly rewritten resume based on the job description.'),
+});
+
+type ResumeRewritePredictResponse = z.infer<typeof questionAnswerFormat>;
+
+const predictionParser =
+  StructuredOutputParser.fromZodSchema(questionAnswerFormat);
+
+const resumeRewriteParsePrediction = (
+  predictResponse: string
+): PredictResponse => {
+  const parsed = predictionParser.parse(
+    predictResponse
+  ) as ResumeRewritePredictResponse;
+
+  if (!parsed || !parsed.answer) {
+    return {
+      error: 'Failed to parse response from GPT-3',
+      prediction: null,
+    };
+  }
+  return {
+    prediction: parsed.answer,
+  };
+};
 
 /**
  * Completely rewrite a Resume based on a job description.
  */
-export const resumeRewritePrompt = async ({
+const resumeRewritePrompt = async ({
   jobDescription,
   resume,
 }: {
@@ -25,14 +55,6 @@ Whenever applicable, customize bullet points from my resume to match key words f
 Do not change company names of where I worked in the updated resume.
 Only include experiences that are directly included in my resume context.`;
 
-  type QuestionAnswer = {
-    answer: string;
-  };
-  const formatParser =
-    StructuredOutputParser.fromNamesAndDescriptions<QuestionAnswer>({
-      answer: 'The newly rewritten resume based on the job description.',
-    });
-
   const endingPrompt = `Rewrite my resume for this Job Description:\n${jobDescription}`;
 
   const prompt = await new PromptTemplate({
@@ -41,18 +63,15 @@ Only include experiences that are directly included in my resume context.`;
     partialVariables: {
       startingPrompt,
       context,
-      format_instructions: formatParser.getFormatInstructions(),
+      format_instructions: predictionParser.getFormatInstructions(),
       endingPrompt,
     },
   }).format({});
 
-  const parsed = await callAndParsePrompt<QuestionAnswer>({
-    prompt,
-    parserFn: (val) => formatParser.parse(val),
-  });
-  if (!parsed) {
-    throw new Error('Failed to parse response from GPT-3');
-  }
+  return prompt;
+};
 
-  return parsed.answer;
+export const resumeRewritePredict = {
+  promptTemplate: resumeRewritePrompt,
+  parsePrediction: resumeRewriteParsePrediction,
 };

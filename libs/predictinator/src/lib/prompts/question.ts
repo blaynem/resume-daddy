@@ -1,12 +1,39 @@
+import { z } from 'zod';
 import { PromptTemplate } from 'langchain/prompts';
 import { StructuredOutputParser } from 'langchain/output_parsers';
-import { callAndParsePrompt, createContextPrompt } from './helpers';
+import { createContextPrompt } from './helpers';
+import { PredictResponse } from '../predictinator';
+
+const questionAnswerFormat = z.object({
+  answer: z.string().describe('The answer to the question:'),
+});
+
+type QuestionPredictResponse = z.infer<typeof questionAnswerFormat>;
+
+const predictionParser =
+  StructuredOutputParser.fromZodSchema(questionAnswerFormat);
+
+const questionParsePrediction = (predictResponse: string): PredictResponse => {
+  const parsed = predictionParser.parse(
+    predictResponse
+  ) as QuestionPredictResponse;
+
+  if (!parsed || !parsed.answer) {
+    return {
+      error: 'Failed to parse response from GPT-3',
+      prediction: null,
+    };
+  }
+  return {
+    prediction: parsed.answer,
+  };
+};
 
 /**
  * Creates and fires a prompt that attempts to answer a question in the contet of a job interview.
  * It will help predict the answer to the question by using the user's resume + job description.
  */
-export const questionAnswerPrompt = async ({
+const questionPromptTemplate = async ({
   jobDescription,
   resume,
   question,
@@ -33,13 +60,6 @@ export const questionAnswerPrompt = async ({
 You are filling out a job application and are asked to answer a few questions. Below is your resume, the job description and the question you are asked to answer.
 Please answer the question in the context of the job description and your resume if possible. Only include experiences that are directly included in my resume context.`;
 
-  type QuestionAnswer = {
-    answer: string;
-  };
-  const formatParser = StructuredOutputParser.fromNamesAndDescriptions({
-    answer: 'The answer to the question that was asked.',
-  });
-
   const endingPrompt = `Interviewer:\n${question}`;
 
   const prompt = await new PromptTemplate({
@@ -48,18 +68,15 @@ Please answer the question in the context of the job description and your resume
     partialVariables: {
       startingPrompt,
       context,
-      format_instructions: formatParser.getFormatInstructions(),
+      format_instructions: predictionParser.getFormatInstructions(),
       endingPrompt,
     },
   }).format({});
 
-  const parsed = await callAndParsePrompt<QuestionAnswer>({
-    prompt,
-    parserFn: (val) => formatParser.parse(val),
-  });
-  if (!parsed) {
-    throw new Error('Failed to parse response from GPT-3');
-  }
+  return prompt;
+};
 
-  return parsed.answer;
+export const questionPredict = {
+  promptTemplate: questionPromptTemplate,
+  parsePrediction: questionParsePrediction,
 };

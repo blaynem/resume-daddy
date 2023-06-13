@@ -17,6 +17,7 @@
     "paths": {
       "@apps/*": ["apps/*"],
       "@libs/*": ["libs/*"],
+      "@resume-daddy/predictinator": ["libs/predictinator/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

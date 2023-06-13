@@ -2,7 +2,15 @@ import { PredictQuestionBody, PredictResponse } from '@libs/types';
 import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies, headers } from 'next/headers';
-import { TypeOfPrediction } from '../../resumes/page';
+// import { TypeOfPrediction } from '../../resumes/page';
+
+export enum TypeOfPrediction {
+  JOB_EXPERIENCE = 'JOB_EXPERIENCE',
+  COVER_LETTER = 'COVER_LETTER',
+  QUESTION = 'QUESTION',
+  RESUME = 'RESUME',
+  SUMMARY = 'SUMMARY',
+}
 
 export type PredictQuestionRequestBody = {
   jobDescription: string;

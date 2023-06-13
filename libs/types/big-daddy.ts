@@ -41,8 +41,4 @@ export type PredictExperiencesBody = {
    * The user id that we want to base our predictions on.
    */
   user_id: string;
-  /**
-   * The job description that we want to base our predictions on.
-   */
-  jobDescription?: string;
 };

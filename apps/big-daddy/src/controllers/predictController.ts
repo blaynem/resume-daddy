@@ -1,6 +1,5 @@
-import { shortCoverLetterPrompt } from '../prompts/coverLetter';
 import prisma from '../clients/prisma';
-import { jobs, user } from '@prisma/client';
+import predictinator from '../clients/predictinator';
 import { Request, Response } from 'express';
 import type {
   PredictCoverLetterBody,
@@ -10,18 +9,7 @@ import type {
   PredictSummaryBody,
   PredictQuestionBody,
 } from '@libs/types/big-daddy';
-import { experienceUpdatePrompt } from '../prompts/experiences';
-import { resumeRewritePrompt } from '../prompts/resumeRewrite';
-import { questionAnswerPrompt } from '../prompts/question';
-
-type userFetch = user & { jobs: jobs[] };
-const parseResumeToString = (resume: userFetch) => {
-  const resumeString = resume.jobs.reduce((acc, job) => {
-    const jobString = `Title:${job.title}\nSummary:${job.summary}\nExperience:${job.experience}\nSkills:${job.temp_skills}\n`;
-    return acc + jobString;
-  }, '');
-  return resumeString;
-};
+import { parseResumeForPrompts } from '@libs/predictinator/src';
 
 // TODO: Eventually we need to get the user from the supabase auth header
 const doUserFetch = async (id: string) => {
@@ -55,12 +43,15 @@ const predictController = {
         return;
       }
       const userFetch = await doUserFetch(user_id);
-      const parsedResume = parseResumeToString(userFetch);
-      const answer = await shortCoverLetterPrompt({
+      const parsedResume = parseResumeForPrompts(userFetch.jobs);
+      const answer = await predictinator.coverLetterPredict(
         jobDescription,
-        resume: parsedResume,
-      });
-      res.send({ data: answer });
+        parsedResume
+      );
+      if (answer.error) {
+        throw new Error(answer.error);
+      }
+      res.send({ data: answer.prediction });
     } catch (err) {
       console.error(err);
       res.send({ error: 'Error API', data: null }).status(400);
@@ -80,12 +71,15 @@ const predictController = {
         return;
       }
       const userFetch = await doUserFetch(user_id);
-      const parsedResume = parseResumeToString(userFetch);
-      const answer = await resumeRewritePrompt({
+      const parsedResume = parseResumeForPrompts(userFetch.jobs);
+      const answer = await predictinator.resumeRewritePredict(
         jobDescription,
-        resume: parsedResume,
-      });
-      res.send({ data: answer });
+        parsedResume
+      );
+      if (answer.error) {
+        throw new Error(answer.error);
+      }
+      res.send({ data: answer.prediction });
     } catch (err) {
       console.error(err);
       res.send({ error: 'Error API', data: null }).status(400);
@@ -102,7 +96,7 @@ const predictController = {
     res: Response<PredictResponse>
   ) => {
     try {
-      const { jobId, user_id, jobDescription } = req.body;
+      const { jobId, user_id } = req.body;
       console.log('---req.body---', req.body);
       console.log('---req.headers---', req.headers);
       if (!jobId) {
@@ -120,11 +114,11 @@ const predictController = {
         res.send({ error: 'Job not found', data: null }).status(400);
         return;
       }
-      const answer = await experienceUpdatePrompt({
-        job: jobFetch,
-        jobDescription,
-      });
-      res.send({ data: answer });
+      const answer = await predictinator.experiencesPredict(jobFetch);
+      if (answer.error) {
+        throw new Error(answer.error);
+      }
+      res.send({ data: answer.prediction });
     } catch (err) {
       console.error(err);
       res.send({ error: 'Error API', data: null }).status(400);
@@ -152,13 +146,16 @@ const predictController = {
         return;
       }
 
-      const parsedResume = parseResumeToString(userFetch);
-      const answer = await questionAnswerPrompt({
+      const parsedResume = parseResumeForPrompts(userFetch.jobs);
+      const answer = await predictinator.questionAnswerPredict(
         jobDescription,
-        resume: parsedResume,
-        question,
-      });
-      res.send({ data: answer });
+        parsedResume,
+        question
+      );
+      if (answer.error) {
+        throw new Error(answer.error);
+      }
+      res.send({ data: answer.prediction });
     } catch (err) {
       console.error(err);
       res.send({ error: 'Error API', data: null }).status(400);
