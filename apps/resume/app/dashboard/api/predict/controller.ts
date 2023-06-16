@@ -1,17 +1,11 @@
-import prisma from '../clients/prisma';
-import predictinator from '../clients/predictinator';
-import { Request, Response } from 'express';
 import type {
-  PredictCoverLetterBody,
   PredictResponse,
-  PredictExperiencesBody,
-  PredictResumeBody,
-  PredictSummaryBody,
   PredictQuestionBody,
 } from '@libs/types/big-daddy';
 import { parseResumeForPrompts } from '@libs/predictinator/src';
+import prisma from '../../../../clients/prisma';
+import predictinator from '../../../../clients/predictinator';
 
-// TODO: Eventually we need to get the user from the supabase auth header
 const doUserFetch = async (id: string) => {
   return await prisma.user.findFirst({
     where: {
@@ -31,18 +25,17 @@ const doUserFetch = async (id: string) => {
 
 const predictController = {
   coverLetterPredict: async (
-    req: Request<unknown, unknown, PredictCoverLetterBody>,
-    res: Response<PredictResponse>
-  ) => {
+    body: PredictQuestionBody
+  ): Promise<PredictResponse> => {
     try {
-      const { jobDescription, user_id } = req.body;
+      const { jobDescription, user_id } = body;
       if (!jobDescription) {
-        res
-          .send({ error: 'No job description provided', data: null })
-          .status(400);
-        return;
+        return { error: 'No job description provided', data: null };
       }
       const userFetch = await doUserFetch(user_id);
+      if (!userFetch || !userFetch.jobs) {
+        throw new Error('No user found');
+      }
       const parsedResume = parseResumeForPrompts(userFetch.jobs);
       const answer = await predictinator.coverLetterPredict(
         jobDescription,
@@ -51,26 +44,25 @@ const predictController = {
       if (answer.error) {
         throw new Error(answer.error);
       }
-      res.send({ data: answer.prediction });
+      return { data: answer.prediction };
     } catch (err) {
       console.error(err);
-      res.send({ error: 'Error API', data: null }).status(400);
+      return { error: 'Error API', data: null };
     }
   },
   resumeRewritePredict: async (
-    req: Request<unknown, unknown, PredictResumeBody>,
-    res: Response<PredictResponse>
-  ) => {
+    body: PredictQuestionBody
+  ): Promise<PredictResponse> => {
     try {
       // TODO: Improve this prompt
-      const { jobDescription, user_id } = req.body;
+      const { jobDescription, user_id } = body;
       if (!jobDescription) {
-        res
-          .send({ error: 'No job description provided', data: null })
-          .status(400);
-        return;
+        return { error: 'No job description provided', data: null };
       }
       const userFetch = await doUserFetch(user_id);
+      if (!userFetch || !userFetch.jobs) {
+        throw new Error('No user found');
+      }
       const parsedResume = parseResumeForPrompts(userFetch.jobs);
       const answer = await predictinator.resumeRewritePredict(
         jobDescription,
@@ -79,71 +71,58 @@ const predictController = {
       if (answer.error) {
         throw new Error(answer.error);
       }
-      res.send({ data: answer.prediction });
+      return { data: answer.prediction };
     } catch (err) {
       console.error(err);
-      res.send({ error: 'Error API', data: null }).status(400);
+      return { error: 'Error API', data: null };
     }
   },
   summaryPredict: async (
-    req: Request<unknown, unknown, PredictSummaryBody>,
-    res: Response<PredictResponse>
-  ) => {
-    res.send({ data: 'not implemented' });
+    body: PredictQuestionBody
+  ): Promise<PredictResponse> => {
+    return { data: 'not implemented' };
   },
   experiencesPredict: async (
-    req: Request<unknown, unknown, PredictExperiencesBody>,
-    res: Response<PredictResponse>
-  ) => {
+    body: PredictQuestionBody
+  ): Promise<PredictResponse> => {
     try {
-      const { jobId, user_id } = req.body;
-      console.log('---req.body---', req.body);
-      console.log('---req.headers---', req.headers);
-      if (!jobId) {
-        res.send({ error: 'No job id provided', data: null }).status(400);
-        return;
+      const { job_id, user_id } = body;
+      console.log('---body---', body);
+      if (!job_id) {
+        return { error: 'No job id provided', data: null };
       }
       const jobFetch = await prisma.jobs.findFirst({
         where: {
-          id: jobId,
+          id: job_id,
           user_id: user_id,
         },
       });
       console.log('--jobfetch--', jobFetch);
       if (!jobFetch) {
-        res.send({ error: 'Job not found', data: null }).status(400);
-        return;
+        return { error: 'Job not found', data: null };
       }
       const answer = await predictinator.experiencesPredict(jobFetch);
       if (answer.error) {
         throw new Error(answer.error);
       }
-      res.send({ data: answer.prediction });
+      return { data: answer.prediction };
     } catch (err) {
       console.error(err);
-      res.send({ error: 'Error API', data: null }).status(400);
+      return { error: 'Error API', data: null };
     }
   },
   questionAnswerPredict: async (
-    req: Request<unknown, unknown, PredictQuestionBody>,
-    res: Response<PredictResponse>
-  ) => {
+    body: PredictQuestionBody
+  ): Promise<PredictResponse> => {
     try {
-      const { jobDescription, question, user_id } = req.body;
+      const { jobDescription, question, user_id } = body;
       if (!jobDescription || !question) {
         // res.send if they are missing one of these params
-        res
-          .send({
-            error: 'No job description or question provided',
-            data: null,
-          })
-          .status(400);
-        return;
+        return { error: 'No job description or question provided', data: null };
       }
       const userFetch = await doUserFetch(user_id);
       if (userFetch === null) {
-        res.send({ error: 'User not found', data: null }).status(400);
-        return;
+        return { error: 'User not found', data: null };
       }
 
       const parsedResume = parseResumeForPrompts(userFetch.jobs);
@@ -155,10 +134,10 @@ const predictController = {
       if (answer.error) {
         throw new Error(answer.error);
       }
-      res.send({ data: answer.prediction });
+      return { data: answer.prediction };
     } catch (err) {
       console.error(err);
-      res.send({ error: 'Error API', data: null }).status(400);
+      return { error: 'Error API', data: null };
     }
   },
 };

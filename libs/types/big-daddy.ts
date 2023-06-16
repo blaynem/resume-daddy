@@ -30,6 +30,7 @@ export type PredictQuestionBody = {
   jobDescription: string;
   question: string;
   user_id: string;
+  job_id?: string;
 };
 
 export type PredictExperiencesBody = {
@@ -41,8 +42,4 @@ export type PredictExperiencesBody = {
    * The user id that we want to base our predictions on.
    */
   user_id: string;
-  /**
-   * The job description that we want to base our predictions on.
-   */
-  jobDescription?: string;
 };
