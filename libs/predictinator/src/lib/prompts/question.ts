@@ -13,10 +13,12 @@ type QuestionPredictResponse = z.infer<typeof questionAnswerFormat>;
 const predictionParser =
   StructuredOutputParser.fromZodSchema(questionAnswerFormat);
 
-const questionParsePrediction = (predictResponse: string): PredictResponse => {
-  const parsed = predictionParser.parse(
+const questionParsePrediction = async (
+  predictResponse: string
+): Promise<PredictResponse> => {
+  const parsed = (await predictionParser.parse(
     predictResponse
-  ) as QuestionPredictResponse;
+  )) as QuestionPredictResponse;
 
   if (!parsed || !parsed.answer) {
     return {

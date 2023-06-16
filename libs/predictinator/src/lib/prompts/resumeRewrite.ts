@@ -15,12 +15,12 @@ type ResumeRewritePredictResponse = z.infer<typeof questionAnswerFormat>;
 const predictionParser =
   StructuredOutputParser.fromZodSchema(questionAnswerFormat);
 
-const resumeRewriteParsePrediction = (
+const resumeRewriteParsePrediction = async (
   predictResponse: string
-): PredictResponse => {
-  const parsed = predictionParser.parse(
+): Promise<PredictResponse> => {
+  const parsed = (await predictionParser.parse(
     predictResponse
-  ) as ResumeRewritePredictResponse;
+  )) as ResumeRewritePredictResponse;
 
   if (!parsed || !parsed.answer) {
     return {

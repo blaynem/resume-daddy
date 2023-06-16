@@ -18,12 +18,12 @@ export type ExperiencesPredictResponse = z.infer<typeof questionAnswerFormat>;
 const predictionParser =
   StructuredOutputParser.fromZodSchema(questionAnswerFormat);
 
-const experiencesParsePrediction = (
+const experiencesParsePrediction = async (
   predictResponse: string
-): PredictResponse => {
-  const parsed = predictionParser.parse(
+): Promise<PredictResponse> => {
+  const parsed = (await predictionParser.parse(
     predictResponse
-  ) as ExperiencesPredictResponse;
+  )) as ExperiencesPredictResponse;
 
   if (!parsed || !parsed.experience) {
     return {

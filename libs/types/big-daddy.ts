@@ -30,6 +30,7 @@ export type PredictQuestionBody = {
   jobDescription: string;
   question: string;
   user_id: string;
+  job_id?: string;
 };
 
 export type PredictExperiencesBody = {

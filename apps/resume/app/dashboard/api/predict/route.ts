@@ -2,7 +2,7 @@ import { PredictQuestionBody, PredictResponse } from '@libs/types';
 import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies, headers } from 'next/headers';
-// import { TypeOfPrediction } from '../../resumes/page';
+import predictController from './controller';
 
 export enum TypeOfPrediction {
   JOB_EXPERIENCE = 'JOB_EXPERIENCE',
@@ -16,17 +16,17 @@ export type PredictQuestionRequestBody = {
   jobDescription: string;
   question: string;
   typeOfPrediction: TypeOfPrediction;
+  job_id?: string;
 };
 
 const typeOfPredictionToUrl = {
-  [TypeOfPrediction.QUESTION]: '/predict/questions',
-  [TypeOfPrediction.JOB_EXPERIENCE]: '/predict/experiences',
-  [TypeOfPrediction.COVER_LETTER]: '/predict/coverLetter',
-  [TypeOfPrediction.RESUME]: '/predict/resume',
-  [TypeOfPrediction.SUMMARY]: '/predict/summary',
+  [TypeOfPrediction.QUESTION]: predictController.questionAnswerPredict,
+  [TypeOfPrediction.JOB_EXPERIENCE]: predictController.experiencesPredict,
+  [TypeOfPrediction.COVER_LETTER]: predictController.coverLetterPredict,
+  [TypeOfPrediction.RESUME]: predictController.resumeRewritePredict,
+  [TypeOfPrediction.SUMMARY]: predictController.summaryPredict,
 };
 
-const BASE_SERVER_URL = 'http://localhost:3000';
 export async function POST(
   request: NextRequest
 ): Promise<NextResponse<PredictResponse>> {
@@ -46,20 +46,14 @@ export async function POST(
       user_id: user.id,
       jobDescription: reqBody.jobDescription,
       question: reqBody.question,
+      job_id: reqBody.job_id,
     };
-    // Get the correct url
-    const predictUrl = typeOfPredictionToUrl[reqBody.typeOfPrediction];
-    // Make fetch to the server
-    const predictQuestionResp = (await fetch(
-      `${BASE_SERVER_URL}${predictUrl}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(serverBody),
-      }
-    ).then((res) => res.json())) as PredictResponse;
+    // Get the predict action
+    const predictAction = typeOfPredictionToUrl[reqBody.typeOfPrediction];
+    if (!predictAction) {
+      throw new Error('No predict action found');
+    }
+    const predictQuestionResp = await predictAction(serverBody);
 
     // If the req fails, throw an error
     if (predictQuestionResp.error) {

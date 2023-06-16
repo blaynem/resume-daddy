@@ -53,12 +53,12 @@ type CoverLetterPredictResponse = z.infer<typeof questionAnswerFormat>;
 const predictionParser =
   StructuredOutputParser.fromZodSchema(questionAnswerFormat);
 
-const coverLetterParsePrediction = (
+const coverLetterParsePrediction = async (
   predictResponse: string
-): PredictResponse => {
-  const parsed = predictionParser.parse(
+): Promise<PredictResponse> => {
+  const parsed = (await predictionParser.parse(
     predictResponse
-  ) as CoverLetterPredictResponse;
+  )) as CoverLetterPredictResponse;
 
   if (!parsed || !parsed.answer) {
     return {
