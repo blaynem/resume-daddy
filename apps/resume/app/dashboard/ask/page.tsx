@@ -7,24 +7,20 @@ import { EditableInput } from '../editable-input';
 import { PredictResponse } from '@libs/types';
 
 export enum TypeOfPrediction {
-  JOB_EXPERIENCE = 'JOB_EXPERIENCE',
-  COVER_LETTER = 'COVER_LETTER',
   QUESTION = 'QUESTION',
-  RESUME = 'RESUME',
-  SUMMARY = 'SUMMARY',
 }
 
 const options = [
-  {
-    value: 'job-experience',
-    label: 'Job Experience',
-    predictionType: TypeOfPrediction.JOB_EXPERIENCE,
-  },
-  {
-    value: 'cover-letter',
-    label: 'Cover Letter',
-    predictionType: TypeOfPrediction.COVER_LETTER,
-  },
+  // {
+  //   value: 'job-experience',
+  //   label: 'Job Experience',
+  //   predictionType: TypeOfPrediction.JOB_EXPERIENCE,
+  // },
+  // {
+  //   value: 'cover-letter',
+  //   label: 'Cover Letter',
+  //   predictionType: TypeOfPrediction.COVER_LETTER,
+  // },
   {
     value: 'questions',
     label: 'Questions',
@@ -90,7 +86,9 @@ export default function ResumesPage() {
       <div className="mb-4 w-full">
         <p className="text-md font-semibold">What do you need help with?</p>
         <Select
-          disabled={submitting}
+          // Disabled for now, we only support questions
+          // disabled={submitting}
+          disabled
           onChange={(e) => setQuestionType(e.target.value)}
           value={questionType}
           className="pt-0"

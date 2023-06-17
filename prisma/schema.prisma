@@ -10,16 +10,16 @@ datasource db {
 
 model user {
   /// This user id is from the auth schema, not the public schema.
-  id                String              @id @db.Uuid
-  email             String
-  first_name        String
-  last_name         String
-  audit_logs        audit_log[]
-  interests         interests[]
-  jobs              jobs[]
-  resumePredictions resumePredictions[]
-  skills            skills[]
-  suggestedChanges  suggestedChanges[]
+  id               String             @id @db.Uuid
+  email            String
+  first_name       String
+  last_name        String
+  audit_logs       audit_log[]
+  interests        interests[]
+  jobs             jobs[]
+  predictions      predictions[]
+  skills           skills[]
+  suggestedChanges suggestedChanges[]
 }
 
 model audit_log {
@@ -49,14 +49,21 @@ model suggestedChanges {
   user              user?          @relation(fields: [user_id], references: [id])
 }
 
-model resumePredictions {
-  id         String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  user_id    String? @db.Uuid
-  /// Prompt is what we sent to the AI to predict.
-  prompt     String
+/// Table to store prediction information
+model predictions {
+  id              String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id         String?        @db.Uuid
+  /// Job description that we are making a prediction for
+  job_description String
+  /// What the current state of the users resume is
+  resume          String
+  /// Free form text that the user can enter to help the AI
+  question        String
   /// Prediction is what the AI returned in response.
-  prediction String
-  user       user?   @relation(fields: [user_id], references: [id])
+  prediction      String
+  created_at      DateTime?      @default(now())
+  type            PredictionType
+  user            user?          @relation(fields: [user_id], references: [id])
 }
 
 /// TODO: Add more tags to break these down further in the future.
@@ -135,4 +142,8 @@ enum SuggestionType {
   EXPERIENCE
   JOB_SUMMARY
   COVER_LETTER
+}
+
+enum PredictionType {
+  FREE_FORM_QUESTION
 }

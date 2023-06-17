@@ -3,7 +3,7 @@ import { PromptTemplate } from 'langchain/prompts';
 import { StructuredOutputParser } from 'langchain/output_parsers';
 import { createContextPrompt } from './helpers';
 import { jobs } from '@prisma/client';
-import { PredictResponse } from '../predictinator';
+import { ParsePrediction } from '../predictinator';
 
 const questionAnswerFormat = z.object({
   experience: z
@@ -20,7 +20,7 @@ const predictionParser =
 
 const experiencesParsePrediction = async (
   predictResponse: string
-): Promise<PredictResponse> => {
+): Promise<ParsePrediction> => {
   const parsed = (await predictionParser.parse(
     predictResponse
   )) as ExperiencesPredictResponse;

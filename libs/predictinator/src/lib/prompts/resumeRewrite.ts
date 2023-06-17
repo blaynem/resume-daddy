@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { PromptTemplate } from 'langchain/prompts';
 import { StructuredOutputParser } from 'langchain/output_parsers';
 import { createContextPrompt } from './helpers';
-import { PredictResponse } from '../predictinator';
+import { ParsePrediction } from '../predictinator';
 
 const questionAnswerFormat = z.object({
   answer: z
@@ -17,7 +17,7 @@ const predictionParser =
 
 const resumeRewriteParsePrediction = async (
   predictResponse: string
-): Promise<PredictResponse> => {
+): Promise<ParsePrediction> => {
   const parsed = (await predictionParser.parse(
     predictResponse
   )) as ResumeRewritePredictResponse;

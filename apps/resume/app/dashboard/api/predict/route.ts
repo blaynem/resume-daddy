@@ -2,14 +2,10 @@ import { PredictQuestionBody, PredictResponse } from '@libs/types';
 import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies, headers } from 'next/headers';
-import predictController from './controller';
+import { questionAnswerPredict } from './controller';
 
 export enum TypeOfPrediction {
-  JOB_EXPERIENCE = 'JOB_EXPERIENCE',
-  COVER_LETTER = 'COVER_LETTER',
   QUESTION = 'QUESTION',
-  RESUME = 'RESUME',
-  SUMMARY = 'SUMMARY',
 }
 
 export type PredictQuestionRequestBody = {
@@ -20,11 +16,7 @@ export type PredictQuestionRequestBody = {
 };
 
 const typeOfPredictionToUrl = {
-  [TypeOfPrediction.QUESTION]: predictController.questionAnswerPredict,
-  [TypeOfPrediction.JOB_EXPERIENCE]: predictController.experiencesPredict,
-  [TypeOfPrediction.COVER_LETTER]: predictController.coverLetterPredict,
-  [TypeOfPrediction.RESUME]: predictController.resumeRewritePredict,
-  [TypeOfPrediction.SUMMARY]: predictController.summaryPredict,
+  [TypeOfPrediction.QUESTION]: questionAnswerPredict,
 };
 
 export async function POST(
@@ -41,19 +33,21 @@ export async function POST(
     if (!user) {
       throw new Error('No user found');
     }
+
     const reqBody = (await request.json()) as PredictQuestionRequestBody;
-    const serverBody: PredictQuestionBody = {
-      user_id: user.id,
-      jobDescription: reqBody.jobDescription,
-      question: reqBody.question,
-      job_id: reqBody.job_id,
-    };
     // Get the predict action
     const predictAction = typeOfPredictionToUrl[reqBody.typeOfPrediction];
     if (!predictAction) {
       throw new Error('No predict action found');
     }
-    const predictQuestionResp = await predictAction(serverBody);
+
+    const predictBody: PredictQuestionBody = {
+      user_id: user.id,
+      jobDescription: reqBody.jobDescription,
+      question: reqBody.question,
+      job_id: reqBody.job_id,
+    };
+    const predictQuestionResp = await predictAction(predictBody);
 
     // If the req fails, throw an error
     if (predictQuestionResp.error) {

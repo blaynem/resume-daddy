@@ -22,6 +22,53 @@ export interface Database {
           A?: string
           B?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "_jobsToskills_A_fkey"
+            columns: ["A"]
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "_jobsToskills_B_fkey"
+            columns: ["B"]
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      _prisma_migrations: {
+        Row: {
+          applied_steps_count: number
+          checksum: string
+          finished_at: string | null
+          id: string
+          logs: string | null
+          migration_name: string
+          rolled_back_at: string | null
+          started_at: string
+        }
+        Insert: {
+          applied_steps_count?: number
+          checksum: string
+          finished_at?: string | null
+          id: string
+          logs?: string | null
+          migration_name: string
+          rolled_back_at?: string | null
+          started_at?: string
+        }
+        Update: {
+          applied_steps_count?: number
+          checksum?: string
+          finished_at?: string | null
+          id?: string
+          logs?: string | null
+          migration_name?: string
+          rolled_back_at?: string | null
+          started_at?: string
+        }
+        Relationships: []
       }
       audit_log: {
         Row: {
@@ -51,6 +98,14 @@ export interface Database {
           timestamp?: string | null
           user_id?: string | null
         }
+        Relationships: [
+          {
+            foreignKeyName: "audit_log_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       interests: {
         Row: {
@@ -71,6 +126,14 @@ export interface Database {
           industry_tags?: string[] | null
           user_id?: string | null
         }
+        Relationships: [
+          {
+            foreignKeyName: "interests_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       jobs: {
         Row: {
@@ -127,26 +190,54 @@ export interface Database {
           user_id?: string | null
           user_job_order?: number
         }
+        Relationships: [
+          {
+            foreignKeyName: "jobs_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          }
+        ]
       }
-      resumePredictions: {
+      predictions: {
         Row: {
+          created_at: string | null
           id: string
+          job_description: string
           prediction: string
-          prompt: string
+          question: string
+          resume: string
+          type: Database["public"]["Enums"]["PredictionType"]
           user_id: string | null
         }
         Insert: {
+          created_at?: string | null
           id?: string
+          job_description: string
           prediction: string
-          prompt: string
+          question: string
+          resume: string
+          type: Database["public"]["Enums"]["PredictionType"]
           user_id?: string | null
         }
         Update: {
+          created_at?: string | null
           id?: string
+          job_description?: string
           prediction?: string
-          prompt?: string
+          question?: string
+          resume?: string
+          type?: Database["public"]["Enums"]["PredictionType"]
           user_id?: string | null
         }
+        Relationships: [
+          {
+            foreignKeyName: "predictions_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       signup: {
         Row: {
@@ -170,6 +261,7 @@ export interface Database {
           date_completed?: string | null
           id?: string
         }
+        Relationships: []
       }
       skills: {
         Row: {
@@ -193,6 +285,14 @@ export interface Database {
           interpretation?: string | null
           user_id?: string | null
         }
+        Relationships: [
+          {
+            foreignKeyName: "skills_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       suggestedChanges: {
         Row: {
@@ -228,6 +328,14 @@ export interface Database {
           type?: Database["public"]["Enums"]["SuggestionType"]
           user_id?: string | null
         }
+        Relationships: [
+          {
+            foreignKeyName: "suggestedChanges_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       user: {
         Row: {
@@ -248,6 +356,7 @@ export interface Database {
           id?: string
           last_name?: string
         }
+        Relationships: []
       }
     }
     Views: {
@@ -257,8 +366,9 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
+      PredictionType: "FREE_FORM_QUESTION"
       StatusType: "PENDING" | "ACCEPTED" | "REJECTED"
-      SuggestionType: "EXPERIENCE" | "JOB_SUMMARY"
+      SuggestionType: "EXPERIENCE" | "JOB_SUMMARY" | "COVER_LETTER"
     }
     CompositeTypes: {
       [_ in never]: never

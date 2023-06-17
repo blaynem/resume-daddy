@@ -1,6 +1,5 @@
 # TODO
 
-- Save the predictions in the db
 - Create way to query show all previous predictions
 - cleanup how easy it is to request. its a little weird right now
 

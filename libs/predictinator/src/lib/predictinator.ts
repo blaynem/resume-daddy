@@ -7,7 +7,16 @@ import {
 import { gptTurboModel } from '../clients/openAI';
 import { jobs } from '@prisma/client';
 
-export type PredictResponse = {
+export type PredictinatorResponse =
+  | {
+      data: { prediction: string; prompt: string };
+    }
+  | {
+      data: null;
+      error: string;
+    };
+
+export type ParsePrediction = {
   prediction: string | null;
   error?: string;
 };
@@ -22,7 +31,7 @@ type Predictinator = {
      * User's resume.
      */
     resume: string
-  ) => Promise<PredictResponse>;
+  ) => Promise<PredictinatorResponse>;
   resumeRewritePredict: (
     /**
      * User pasted job description they are applying to.
@@ -32,13 +41,13 @@ type Predictinator = {
      * User's resume.
      */
     resume: string
-  ) => Promise<PredictResponse>;
+  ) => Promise<PredictinatorResponse>;
   experiencesPredict: (
     /**
      * Individiual job object
      */
     job: jobs
-  ) => Promise<PredictResponse>;
+  ) => Promise<PredictinatorResponse>;
   /**
    * Answer a question based on a job description and resume.
    */
@@ -55,7 +64,7 @@ type Predictinator = {
      * Question to answer for the context of the job description.
      */
     question: string
-  ) => Promise<PredictResponse>;
+  ) => Promise<PredictinatorResponse>;
 };
 
 /**
@@ -81,9 +90,20 @@ export const Predictinator = (openAIApiKey: string): Predictinator => {
           resume,
         });
         const predictResponse = await gptClient.call(prompt);
-        return coverLetterPredict.parsePrediction(predictResponse);
+        const parsedPrediction = await coverLetterPredict.parsePrediction(
+          predictResponse
+        );
+        if (parsedPrediction.error) {
+          throw new Error(parsedPrediction.error);
+        }
+        return {
+          data: {
+            prompt: prompt,
+            prediction: parsedPrediction.prediction,
+          },
+        };
       } catch (err) {
-        return { error: err.message, prediction: null };
+        return { error: err.message, data: null };
       }
     },
     resumeRewritePredict: async (jobDescription, resume) => {
@@ -96,9 +116,20 @@ export const Predictinator = (openAIApiKey: string): Predictinator => {
           resume,
         });
         const predictResponse = await gptClient.call(prompt);
-        return resumeRewritePredict.parsePrediction(predictResponse);
+        const parsedPrediction = await resumeRewritePredict.parsePrediction(
+          predictResponse
+        );
+        if (parsedPrediction.error) {
+          throw new Error(parsedPrediction.error);
+        }
+        return {
+          data: {
+            prompt: prompt,
+            prediction: parsedPrediction.prediction,
+          },
+        };
       } catch (err) {
-        return { error: err.message, prediction: null };
+        return { error: err.message, data: null };
       }
     },
     experiencesPredict: async (job: jobs) => {
@@ -108,9 +139,20 @@ export const Predictinator = (openAIApiKey: string): Predictinator => {
         }
         const prompt = await experiencesPredict.promptTemplate({ job });
         const predictResponse = await gptClient.call(prompt);
-        return experiencesPredict.parsePrediction(predictResponse);
+        const parsedPrediction = await experiencesPredict.parsePrediction(
+          predictResponse
+        );
+        if (parsedPrediction.error) {
+          throw new Error(parsedPrediction.error);
+        }
+        return {
+          data: {
+            prompt: prompt,
+            prediction: parsedPrediction.prediction,
+          },
+        };
       } catch (err) {
-        return { error: err.message, prediction: null };
+        return { error: err.message, data: null };
       }
     },
     questionAnswerPredict: async (
@@ -128,9 +170,20 @@ export const Predictinator = (openAIApiKey: string): Predictinator => {
           question,
         });
         const predictResponse = await gptClient.call(prompt);
-        return questionPredict.parsePrediction(predictResponse);
+        const parsedPrediction = await questionPredict.parsePrediction(
+          predictResponse
+        );
+        if (parsedPrediction.error) {
+          throw new Error(parsedPrediction.error);
+        }
+        return {
+          data: {
+            prompt: prompt,
+            prediction: parsedPrediction.prediction,
+          },
+        };
       } catch (err) {
-        return { error: err.message, prediction: null };
+        return { error: err.message, data: null };
       }
     },
   };
