@@ -7,24 +7,20 @@ import { EditableInput } from '../editable-input';
 import { PredictResponse } from '@libs/types';
 
 export enum TypeOfPrediction {
-  JOB_EXPERIENCE = 'JOB_EXPERIENCE',
-  COVER_LETTER = 'COVER_LETTER',
   QUESTION = 'QUESTION',
-  RESUME = 'RESUME',
-  SUMMARY = 'SUMMARY',
 }
 
 const options = [
-  {
-    value: 'job-experience',
-    label: 'Job Experience',
-    predictionType: TypeOfPrediction.JOB_EXPERIENCE,
-  },
-  {
-    value: 'cover-letter',
-    label: 'Cover Letter',
-    predictionType: TypeOfPrediction.COVER_LETTER,
-  },
+  // {
+  //   value: 'job-experience',
+  //   label: 'Job Experience',
+  //   predictionType: TypeOfPrediction.JOB_EXPERIENCE,
+  // },
+  // {
+  //   value: 'cover-letter',
+  //   label: 'Cover Letter',
+  //   predictionType: TypeOfPrediction.COVER_LETTER,
+  // },
   {
     value: 'questions',
     label: 'Questions',
@@ -32,14 +28,18 @@ const options = [
   },
 ];
 
+/**
+ * TODO:
+ * - Should write a few different components per question type?
+ */
 export default function ResumesPage() {
   const [question, setQuestion] = useState<string>('');
   const [jobDescription, setJobDescription] = useState<string>('');
-  const [questionType, setQuestionType] = useState<string>('');
-  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [questionType, setQuestionType] = useState<string>('questions');
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const [response, setResponse] = useState<string>('');
   const onSubmit = async () => {
-    if (submitted) return;
+    if (submitting) return;
     // Get the type of prediction
     const typeOfPrediction = options.find(
       (option) => option.value === questionType
@@ -55,7 +55,7 @@ export default function ResumesPage() {
       return;
     }
     // Set submitted to true to disable the button
-    setSubmitted(true);
+    setSubmitting(true);
     const postBody: PredictQuestionRequestBody = {
       jobDescription,
       question,
@@ -70,28 +70,25 @@ export default function ResumesPage() {
     })
       .then((res) => res.json())
       .catch((e) => {
-        setSubmitted(false);
+        setSubmitting(false);
         setResponse('');
       });
     if (resp.error) {
-      setSubmitted(false);
       setResponse('There was an error...');
     }
     setResponse(resp.data ?? '');
+    setSubmitting(false);
 
     console.log('---onClick', resp);
   };
-  const handleClear = () => {
-    // We only want to clear data that users might not want to reuse
-    setSubmitted(false);
-    setResponse('');
-    setQuestion('');
-  };
   return (
-    <div className="p-6">
+    <>
       <div className="mb-4 w-full">
         <p className="text-md font-semibold">What do you need help with?</p>
         <Select
+          // Disabled for now, we only support questions
+          // disabled={submitting}
+          disabled
           onChange={(e) => setQuestionType(e.target.value)}
           value={questionType}
           className="pt-0"
@@ -108,17 +105,21 @@ export default function ResumesPage() {
         value={jobDescription}
         isTextarea
         header="Job Description"
-        isEditMode={!submitted}
+        isEditMode
+        disabled={submitting}
         onChange={setJobDescription}
+        placeholder="We are looking for a software engineer with 5+ years of experience in React and Node.js."
       />
       <EditableInput
         value={question}
         isTextarea
         header="Question"
-        isEditMode={!submitted}
+        isEditMode
+        disabled={submitting}
         onChange={setQuestion}
+        placeholder="What is your greatest weakness?"
       />
-      {submitted && !response ? (
+      {submitting ? (
         <div className="mb-4 w-full">
           <p className="text-md font-semibold">Response</p>
           <Spinner />
@@ -130,23 +131,18 @@ export default function ResumesPage() {
           header="Response"
           isEditMode={false}
           onChange={setResponse}
+          placeholder="Response will appear here..."
         />
       )}
-      <div className="w-full flex justify-between">
+      <div className="w-full flex justify-end">
         <button
-          onClick={handleClear}
-          className="py-1 px-3 border rounded border-red-400 hover:text-white hover:bg-red-400"
-        >
-          Reset
-        </button>
-        <button
-          disabled={submitted}
+          disabled={submitting}
           onClick={onSubmit}
           className="py-1 px-3 border rounded disabled:cursor-not-allowed disabled:border-slate-400 disabled:hover:text-slate-400 disabled:hover:bg-transparent border-violet-400 hover:text-white hover:bg-violet-400"
         >
           Submit
         </button>
       </div>
-    </div>
+    </>
   );
 }

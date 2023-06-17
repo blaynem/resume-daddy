@@ -1,4 +1,4 @@
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { TrashIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 
 export type IconType = React.ComponentType<React.ComponentProps<'svg'>>;
@@ -36,6 +36,8 @@ export const EditableInput = ({
   isTextarea,
   header,
   isEditMode,
+  placeholder,
+  disabled,
   onChange,
   onDeleteClick,
 }: {
@@ -43,6 +45,8 @@ export const EditableInput = ({
   value: string;
   header: string;
   isTextarea?: boolean;
+  placeholder?: string;
+  disabled?: boolean;
   onChange: (value: string) => void;
   onDeleteClick?: () => void;
 }) => {
@@ -62,9 +66,9 @@ export const EditableInput = ({
         <p className="text-md font-semibold">{header}</p>
         {isEditMode && onDeleteClick && (
           <IconButton
-            padding="p-0"
+            padding="p-0 ml-2"
             iconSrText="Delete Job"
-            iconType={XMarkIcon as IconType}
+            iconType={TrashIcon as IconType}
             onClick={onDeleteClick}
           />
         )}
@@ -74,12 +78,19 @@ export const EditableInput = ({
           // Prevents the click from bubbling up to the parent button
           onClick={(e) => e.stopPropagation()}
           type="text"
+          disabled={disabled}
           className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
           value={value}
           onChange={handleChange}
+          placeholder={placeholder}
         />
       ) : (
         <ul className="px-3 py-1.5 h-min-6">
+          {!value && (
+            <li className="text-start sm:text-sm sm:leading-6 text-gray-400">
+              {placeholder}
+            </li>
+          )}
           {splitValue.map((line: string, index: number) => (
             <li key={index} className="text-start sm:text-sm sm:leading-6">
               {line}

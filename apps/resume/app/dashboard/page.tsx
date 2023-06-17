@@ -172,7 +172,7 @@ export default function Dashboard() {
   };
 
   return (
-    <Accordion defaultIndex={[0]} allowMultiple className=" pt-6">
+    <Accordion defaultIndex={[0]} allowMultiple className="pt-6">
       <div className="absolute top-0 right-0">
         {!isEditMode ? (
           <>

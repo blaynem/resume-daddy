@@ -1,5 +1,5 @@
 'use client';
-import { DocumentTextIcon, HomeModernIcon } from '@heroicons/react/24/outline';
+import { BookOpenIcon, DocumentTextIcon, HomeModernIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import React from 'react';
 import { usePathname } from 'next/navigation';
@@ -10,24 +10,19 @@ export const Sidebar = () => {
     {
       href: '/dashboard',
       icon: HomeModernIcon,
-      label: 'Home',
+      label: 'Resume',
       insertBreak: true,
     },
     {
-      href: '/dashboard/resumes',
+      href: '/dashboard/ask',
       icon: DocumentTextIcon,
-      label: 'Resumes',
+      label: 'Ask',
     },
-    // {
-    //   href: '/dashboard/',
-    //   icon: ChartBarIcon,
-    //   label: 'Analytics',
-    // },
-    // {
-    //   href: '/dashboard/',
-    //   icon: Cog6ToothIcon,
-    //   label: 'Settings',
-    // },
+    {
+      href: '/dashboard/history',
+      icon: BookOpenIcon,
+      label: 'History',
+    },
   ];
   return (
     <nav
