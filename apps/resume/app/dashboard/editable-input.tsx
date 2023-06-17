@@ -1,4 +1,4 @@
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { TrashIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 
 export type IconType = React.ComponentType<React.ComponentProps<'svg'>>;
@@ -66,9 +66,9 @@ export const EditableInput = ({
         <p className="text-md font-semibold">{header}</p>
         {isEditMode && onDeleteClick && (
           <IconButton
-            padding="p-0"
+            padding="p-0 ml-2"
             iconSrText="Delete Job"
-            iconType={XMarkIcon as IconType}
+            iconType={TrashIcon as IconType}
             onClick={onDeleteClick}
           />
         )}

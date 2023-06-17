@@ -1,7 +1,7 @@
 import { PredictQuestionBody, PredictResponse } from '@libs/types';
-import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies, headers } from 'next/headers';
+import { cookies } from 'next/headers';
 import { questionAnswerPredict } from './controller';
 
 export enum TypeOfPrediction {
@@ -23,8 +23,7 @@ export async function POST(
   request: NextRequest
 ): Promise<NextResponse<PredictResponse>> {
   try {
-    const supabase = createRouteHandlerSupabaseClient({
-      headers,
+    const supabase = createRouteHandlerClient({
       cookies,
     });
     const {

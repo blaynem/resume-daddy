@@ -82,7 +82,7 @@ export default function ResumesPage() {
     console.log('---onClick', resp);
   };
   return (
-    <div className="p-6">
+    <>
       <div className="mb-4 w-full">
         <p className="text-md font-semibold">What do you need help with?</p>
         <Select
@@ -119,7 +119,7 @@ export default function ResumesPage() {
         onChange={setQuestion}
         placeholder="What is your greatest weakness?"
       />
-      {submitting && !response ? (
+      {submitting ? (
         <div className="mb-4 w-full">
           <p className="text-md font-semibold">Response</p>
           <Spinner />
@@ -143,6 +143,6 @@ export default function ResumesPage() {
           Submit
         </button>
       </div>
-    </div>
+    </>
   );
 }

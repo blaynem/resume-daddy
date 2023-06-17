@@ -1,8 +1,8 @@
 import FancyBG from '../../wrappers/fancy-bg';
 import { Sidebar } from './sidebar';
-import { createServerComponentSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { redirect } from 'next/navigation';
-import { cookies, headers } from 'next/headers';
+import { cookies } from 'next/headers';
 import { Database } from '@libs/database.types';
 
 export const metadata = {
@@ -15,9 +15,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createServerComponentSupabaseClient<Database>({
+  const supabase = createServerComponentClient<Database>({
     cookies,
-    headers,
   });
   const {
     data: { session },

@@ -50,7 +50,7 @@ export const questionAnswerPredict = async (
       throw new Error(response.error);
     }
     // Save prediction to db
-    prisma.predictions.create({
+    await prisma.predictions.create({
       data: {
         user_id: user_id,
         prediction: response.data.prediction,

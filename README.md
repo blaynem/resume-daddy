@@ -1,7 +1,6 @@
 # TODO
 
-- Create way to query show all previous predictions
-- cleanup how easy it is to request. its a little weird right now
+- row level security
 
 # How to run
 
