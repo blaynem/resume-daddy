@@ -14,9 +14,9 @@ export const Sidebar = () => {
       insertBreak: true,
     },
     {
-      href: '/dashboard/resumes',
+      href: '/dashboard/ask',
       icon: DocumentTextIcon,
-      label: 'Resumes',
+      label: 'Ask',
     },
     // {
     //   href: '/dashboard/',
