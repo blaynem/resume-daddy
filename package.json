@@ -1,6 +1,6 @@
 {
   "name": "@resume-daddy/source",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "MIT",
   "scripts": {
     "build:client": "npm run generate:prisma && nx build resume --prod",
