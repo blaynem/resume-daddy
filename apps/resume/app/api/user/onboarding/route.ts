@@ -12,10 +12,14 @@ export async function POST(
   request: NextRequest
 ): Promise<NextResponse<OnboardingSubmitResponse>> {
   try {
-    const onboardingData = (await request.json()) as OnboardingSubmit;
+    const { signupId, ...onboardingData } =
+      (await request.json()) as OnboardingSubmit;
     const submitted = await prisma.signup.create({
       data: {
-        data: onboardingData,
+        id: signupId,
+        data: {
+          ...onboardingData,
+        },
       },
     });
 

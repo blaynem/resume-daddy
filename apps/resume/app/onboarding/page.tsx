@@ -10,6 +10,7 @@ import { useSupabase } from '../supabase-provider';
 import { useRouter } from 'next/navigation';
 
 export type OnboardingSubmit = FormState & {
+  signupId: string;
   jobs: JobDetails[];
 };
 
@@ -83,8 +84,25 @@ export default function Onboarding() {
   };
 
   const handleSignUpClick = async () => {
+    // Fire off the email sign up
+    const signup = await supabase.auth.signUp({
+      email: formState.email,
+      password,
+      options: {
+        emailRedirectTo: `${location.origin}/auth/callback`,
+      },
+    });
+    const signupId = signup.data?.user?.id || '';
+    if (signup.error || !signupId) {
+      // todo: Handle error
+    }
+
     // Set fetching state to started
-    const submitState: OnboardingSubmit = { ...formState, jobs: allJobDetails };
+    const submitState: OnboardingSubmit = {
+      ...formState,
+      jobs: allJobDetails,
+      signupId,
+    };
     const submittedRes: OnboardingSubmitResponse = await fetch(
       '/api/user/onboarding',
       {
@@ -97,17 +115,6 @@ export default function Onboarding() {
       // todo: Handle error
     }
 
-    // Fire off the email sign up
-    const signup = await supabase.auth.signUp({
-      email: formState.email,
-      password,
-      options: {
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_WEB_URL}/onboarding/confirm-email?id=${submittedRes.id}`,
-      },
-    });
-    if (signup.error) {
-      // todo: Handle error
-    }
     setShowSuccess(true);
     setFormState(initialFormState);
     setPassword('');
