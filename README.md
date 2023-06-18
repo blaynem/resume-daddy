@@ -63,6 +63,8 @@ Root
 ```bash
 # Start the supabase cli
 npx supabase start
+# Apply the Prisma DB Migrations
+npx prisma migrate dev
 # Generate the types
 yarn run gen-types:supabase
 # Close the supabase cli
