@@ -1,6 +1,6 @@
 import prisma from '../../../../clients/prisma';
-import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { cookies, headers } from 'next/headers';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export type JobsDeleteResponse = {
@@ -14,8 +14,7 @@ export async function DELETE(
   request: NextRequest
 ): Promise<NextResponse<JobsDeleteResponse>> {
   try {
-    const supabase = createRouteHandlerSupabaseClient({
-      headers,
+    const supabase = createRouteHandlerClient({
       cookies,
     });
     const {
@@ -24,8 +23,11 @@ export async function DELETE(
     if (!user) {
       throw new Error('Not authenticated');
     }
-    // Check the user here from supabase and make sure they are allowed to delete
-    const toDeleteStrings = (await request.json()) as string[];
+    const { searchParams } = new URL(request.url);
+
+    // Should be a string of comma separated ids
+    const deleteIds = searchParams.get('deleteIds') as string;
+    const toDeleteStrings = deleteIds.split(',');
     await prisma.jobs.updateMany({
       where: {
         user_id: user.id,
