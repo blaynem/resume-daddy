@@ -12,6 +12,7 @@ import {
   OnboardingSubmit,
   OnboardingSubmitResponse,
 } from '@libs/types';
+import { getBaseURL } from '@libs/helpers';
 
 const initialFormState: FormState = {
   firstName: '',
@@ -67,7 +68,7 @@ export default function Onboarding() {
       email: formState.email,
       password,
       options: {
-        emailRedirectTo: `${location.origin}/auth/callback`,
+        emailRedirectTo: `${getBaseURL()}/auth/callback`,
       },
     });
     const signupId = signup.data?.user?.id || '';
