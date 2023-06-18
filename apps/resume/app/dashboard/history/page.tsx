@@ -27,7 +27,11 @@ export default function HistoryPage() {
   useEffect(() => {
     // Get the prediction state
     const fetchPredictions = async () => {
-      const { data } = await supabase.from('predictions').select();
+      const { data } = await supabase
+        .from('predictions')
+        .select()
+        .order('created_at', { ascending: false });
+
       setAllPredictions(data ?? []);
     };
     fetchPredictions();
