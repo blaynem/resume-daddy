@@ -1,6 +1,6 @@
 # TODO
 
-- row level security
+- hook up supabase cli for local development
 
 # How to run
 
@@ -71,7 +71,7 @@ npx supabase stop
 
 ## Prisma Flow
 
-**DO NOT RUN `prisma db push` IT IS PAIN** it deleted row level securities and is a pain to fix.
+**DO NOT RUN `prisma db push` IT IS PAIN** it deleted row level securities and is a pain to fix. If you inevitably do, I made an [RLS-policies.sql](/prisma/RLS-policies.sql) file that we can copy/paste into the Supabase SQL Editor to fix it! No worries.
 
 Get latest DB schema from Supabase by introspecting the database.
 
