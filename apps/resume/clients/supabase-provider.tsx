@@ -1,20 +1,17 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import {
-  Session,
-  createBrowserSupabaseClient,
-} from '@supabase/auth-helpers-nextjs';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 
 import type { SupabaseClient } from '@supabase/auth-helpers-nextjs';
 import { Database } from '@libs/database.types';
-
-type MaybeSession = Session | null;
+import { MaybeSession, MaybeUser } from './supabase';
 
 type SupabaseContext = {
   supabase: SupabaseClient<Database>;
   session: MaybeSession;
+  user: MaybeUser;
 };
 
 const Context = createContext<SupabaseContext | undefined>(undefined);
@@ -26,17 +23,17 @@ export default function SupabaseProvider({
   children: React.ReactNode;
   session: MaybeSession;
 }) {
-  const [supabase] = useState(() => createBrowserSupabaseClient());
+  const supabase = createClientComponentClient<Database>();
   const router = useRouter();
+  const [user, setUser] = useState<MaybeUser>(null);
 
   useEffect(() => {
+    // Wehenever the auth state changes, refresh the router
+    // This gives next.js the new session
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      // console.log('==============');
-      // console.log('---event', event);
-      // console.log('---session', session);
-      // console.log('==============');
+      setUser(session ? session.user : null);
       router.refresh();
     });
 
@@ -46,7 +43,7 @@ export default function SupabaseProvider({
   }, [router, supabase]);
 
   return (
-    <Context.Provider value={{ supabase, session }}>
+    <Context.Provider value={{ supabase, session, user }}>
       <>{children}</>
     </Context.Provider>
   );

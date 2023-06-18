@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useSupabase } from '../supabase-provider';
 import { Database } from '@libs/database.types';
 import { EditableInput, IconButton } from './editable-input';
 import {
@@ -9,7 +8,6 @@ import {
   PlusIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { IconType } from './editable-input';
 import { deepEqual } from '@libs/helpers';
 import {
   Accordion,
@@ -17,6 +15,8 @@ import {
   AccordionItem,
   AccordionPanel,
 } from '@chakra-ui/react';
+import { IconType } from '@libs/types';
+import { useSupabase } from '../../clients/supabase-provider';
 
 type JobsResponse = Database['public']['Tables']['jobs']['Row'];
 type JobsResponseInsert = Database['public']['Tables']['jobs']['Insert'];
@@ -46,7 +46,7 @@ export default function Dashboard() {
   const [tempJobsEdits, setTempJobEdits] = useState<JobsResponse[]>([]);
   const [newJobs, setNewJobs] = useState<JobsResponseInsert[]>([]);
   const [isEditMode, setIsEditMode] = useState(false);
-  const { supabase, session } = useSupabase();
+  const { supabase, user } = useSupabase();
 
   useEffect(() => {
     // Todo: Maybe we use the supabase.channel??
@@ -74,7 +74,7 @@ export default function Dashboard() {
       summary: '',
       experience: '',
       temp_skills: '',
-      user_id: session?.user.id,
+      user_id: user?.id,
       user_job_order: tempJobsEdits.length,
     };
     setNewJobs([addNewJob, ...newJobs]);

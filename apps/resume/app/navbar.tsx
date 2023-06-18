@@ -2,14 +2,13 @@
 import React, { useState } from 'react';
 import { Dialog } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { useSupabase } from './supabase-provider';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { useSupabase } from '../clients/supabase-provider';
 
 const navigation = [{ name: 'Dashboard', href: '/dashboard' }];
 
 export default function Example() {
-  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { session, supabase } = useSupabase();
   const pathname = usePathname();
@@ -18,8 +17,7 @@ export default function Example() {
 
   const handleLogoutClick = async (e: any) => {
     e.preventDefault();
-    await supabase.auth.signOut();
-    router.push('/');
+    supabase.auth.signOut();
   };
 
   return (
@@ -50,15 +48,16 @@ export default function Example() {
             </button>
           </div>
           <div className="hidden lg:flex lg:gap-x-12">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="text-sm font-semibold leading-6 text-gray-900"
-              >
-                {item.name}
-              </Link>
-            ))}
+            {session &&
+              navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="text-sm font-semibold leading-6 text-gray-900"
+                >
+                  {item.name}
+                </Link>
+              ))}
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
             {session ? (

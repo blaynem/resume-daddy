@@ -1,6 +1,6 @@
 'use-client';
 import { XMarkIcon, PlusIcon } from '@heroicons/react/24/outline';
-import { JobDetails } from './page';
+import { JobDetailsType } from '@libs/types';
 
 export function JobQuestions({
   details,
@@ -11,11 +11,11 @@ export function JobQuestions({
   onValueChange,
 }: {
   id: string | number;
-  details: JobDetails;
+  details: JobDetailsType;
   header?: string;
   hideDelete?: boolean;
   onDeletePress: () => void;
-  onValueChange: (newDetails: JobDetails) => void;
+  onValueChange: (newDetails: JobDetailsType) => void;
 }) {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -148,10 +148,10 @@ export default function JobDetails({
   onRemoveJob,
   onJobDetailsChange,
 }: {
-  allJobDetails: JobDetails[];
+  allJobDetails: JobDetailsType[];
   onAddJob: () => void;
   onRemoveJob: (index: number) => void;
-  onJobDetailsChange: (index: number, newDetails: JobDetails) => void;
+  onJobDetailsChange: (index: number, newDetails: JobDetailsType) => void;
 }) {
   return (
     <>

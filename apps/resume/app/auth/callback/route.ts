@@ -1,12 +1,10 @@
 import prisma from '../../../clients/prisma';
-import { Database } from '@libs/database.types';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 import type { NextRequest } from 'next/server';
-import { OnboardingSubmit } from '../../onboarding/page';
 import { Prisma } from '@prisma/client';
+import { OnboardingSubmit } from '@libs/types';
+import { supabaseRouter } from '../../../clients/supabase';
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
@@ -18,7 +16,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Trade the code for a supabase auth token
-    const supabase = createRouteHandlerClient<Database>({ cookies });
+    const { supabase } = await supabaseRouter();
     const authToken = await supabase.auth.exchangeCodeForSession(code);
     if (authToken.error) {
       throw new Error(authToken.error.message);

@@ -5,35 +5,20 @@ import JobDetails from './job-details';
 import Modal from '../../wrappers/modal';
 import { useDisclosure } from '@chakra-ui/react';
 import SignInForm from '../../components/sign-in';
-import { OnboardingSubmitResponse } from '../api/user/onboarding/route';
-import { useSupabase } from '../supabase-provider';
-import { useRouter } from 'next/navigation';
-
-export type OnboardingSubmit = FormState & {
-  signupId: string;
-  jobs: JobDetails[];
-};
-
-export type FormState = {
-  firstName: string;
-  lastName: string;
-  email: string;
-};
-
-export type JobDetails = {
-  jobTitle: string;
-  companyName: string;
-  summary: string;
-  experiences: string;
-  skills: string;
-};
+import { useSupabase } from '../../clients/supabase-provider';
+import {
+  FormState,
+  JobDetailsType,
+  OnboardingSubmit,
+  OnboardingSubmitResponse,
+} from '@libs/types';
 
 const initialFormState: FormState = {
   firstName: '',
   lastName: '',
   email: '',
 };
-const templateJobDetails: JobDetails = {
+const templateJobDetails: JobDetailsType = {
   jobTitle: '',
   companyName: '',
   summary: '',
@@ -50,20 +35,13 @@ const templateJobDetails: JobDetails = {
 // - We then tell them to check their email for a verification link.
 // - Once they click the link we log them in and send them to the /welcome page.
 export default function Onboarding() {
-  const { supabase, session } = useSupabase();
-  const router = useRouter();
+  const { supabase } = useSupabase();
   const { isOpen, onOpen: openModal, onClose } = useDisclosure();
   const initialRef = useRef<HTMLInputElement>(null);
   const [password, setPassword] = useState('');
   const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [allJobDetails, setAllJobDetails] = useState<JobDetails[]>([]);
+  const [allJobDetails, setAllJobDetails] = useState<JobDetailsType[]>([]);
   const [showSuccess, setShowSuccess] = useState(false);
-
-  useEffect(() => {
-    if (session) {
-      router.push('/dashboard');
-    }
-  }, [session, router]);
 
   useEffect(() => {
     setAllJobDetails([templateJobDetails]);

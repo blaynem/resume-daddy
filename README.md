@@ -2,6 +2,14 @@
 
 - hook up supabase cli for local development
 
+## NEED BEFORE RELEASE
+
+- Signup flow works
+  - Loading spinner when they click "submit" after entering password to signup
+- Login flow works
+- Landing page makes sense
+- test with some really bad data
+
 # How to run
 
 Install Deps
@@ -36,6 +44,10 @@ npx supabase stop
 ```bash
 npx prisma generate
 ```
+
+- View Local Supabase DB
+
+You can view your local Supabase DB here: [http://localhost:54323/](http://localhost:54323/)
 
 ## Folder Structure
 
