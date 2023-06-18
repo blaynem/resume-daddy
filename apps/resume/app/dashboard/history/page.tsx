@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Database } from '@libs/database.types';
+import { useSupabase } from '../../../clients/supabase-provider';
 
 const HistoryItem = ({
   question,
@@ -22,7 +22,7 @@ const HistoryItem = ({
 
 type PredictionType = Database['public']['Tables']['predictions']['Row'];
 export default function HistoryPage() {
-  const supabase = createClientComponentClient<Database>();
+  const { supabase } = useSupabase();
   const [allPredictions, setAllPredictions] = useState<PredictionType[]>([]);
   useEffect(() => {
     // Get the prediction state

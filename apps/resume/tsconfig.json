@@ -28,7 +28,6 @@
     "**/*.jsx",
     "next-env.d.ts",
     "next.d.ts",
-    "../../apps/resume/.next/types/**/*.ts",
     "../../dist/apps/resume/.next/types/**/*.ts"
   ],
   "exclude": [

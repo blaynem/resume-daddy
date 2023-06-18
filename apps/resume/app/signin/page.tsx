@@ -1,38 +1,34 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSupabase } from '../supabase-provider';
+import { useSupabase } from '../../clients/supabase-provider';
 import SignInForm from '../../components/sign-in';
 import { useRouter } from 'next/navigation';
 
 /**
  * todo: add password reset
  */
-export default function Onboarding() {
+export default function Signin() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { supabase, session } = useSupabase();
 
   useEffect(() => {
-    if (session?.user) {
+    if (session) {
       router.push('/dashboard');
     }
-  }, [router, session]);
+  }, [session, router]);
 
   const handleSubmit = async () => {
-    const signup = await supabase.auth.signInWithPassword({
+    const signin = await supabase.auth.signInWithPassword({
       email: email,
       password,
     });
-    if (signup.error) {
+    if (signin.error) {
       // TODO: Handle errors
       return;
     }
-
-    setPassword('');
-    setEmail('');
-    router.push('/dashboard');
   };
 
   return (

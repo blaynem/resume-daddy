@@ -1,9 +1,7 @@
 import FancyBG from '../../wrappers/fancy-bg';
 import { Sidebar } from './sidebar';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
-import { Database } from '@libs/database.types';
+import { supabaseSever } from '../../clients/supabase';
 
 export const metadata = {
   title: 'Dashboard | Resume Daddy',
@@ -15,12 +13,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createServerComponentClient<Database>({
-    cookies,
-  });
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const { session } = await supabaseSever();
 
   if (!session) {
     redirect('/');

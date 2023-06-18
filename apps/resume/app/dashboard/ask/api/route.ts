@@ -4,10 +4,9 @@ import {
   PredictResponse,
   TypeOfPrediction,
 } from '@libs/types';
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import { questionAnswerPredict } from './controller';
+import { supabaseRouter } from '../../../../clients/supabase';
 
 const typeOfPredictionToUrl = {
   [TypeOfPrediction.QUESTION]: questionAnswerPredict,
@@ -17,12 +16,7 @@ export async function POST(
   request: NextRequest
 ): Promise<NextResponse<PredictResponse>> {
   try {
-    const supabase = createRouteHandlerClient({
-      cookies,
-    });
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const { user } = await supabaseRouter();
     if (!user) {
       throw new Error('No user found');
     }
