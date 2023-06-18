@@ -5,35 +5,21 @@ import JobDetails from './job-details';
 import Modal from '../../wrappers/modal';
 import { useDisclosure } from '@chakra-ui/react';
 import SignInForm from '../../components/sign-in';
-import { OnboardingSubmitResponse } from '../api/user/onboarding/route';
 import { useSupabase } from '../supabase-provider';
 import { useRouter } from 'next/navigation';
-
-export type OnboardingSubmit = FormState & {
-  signupId: string;
-  jobs: JobDetails[];
-};
-
-export type FormState = {
-  firstName: string;
-  lastName: string;
-  email: string;
-};
-
-export type JobDetails = {
-  jobTitle: string;
-  companyName: string;
-  summary: string;
-  experiences: string;
-  skills: string;
-};
+import {
+  FormState,
+  JobDetailsType,
+  OnboardingSubmit,
+  OnboardingSubmitResponse,
+} from '@libs/types';
 
 const initialFormState: FormState = {
   firstName: '',
   lastName: '',
   email: '',
 };
-const templateJobDetails: JobDetails = {
+const templateJobDetails: JobDetailsType = {
   jobTitle: '',
   companyName: '',
   summary: '',
@@ -56,7 +42,7 @@ export default function Onboarding() {
   const initialRef = useRef<HTMLInputElement>(null);
   const [password, setPassword] = useState('');
   const [formState, setFormState] = useState<FormState>(initialFormState);
-  const [allJobDetails, setAllJobDetails] = useState<JobDetails[]>([]);
+  const [allJobDetails, setAllJobDetails] = useState<JobDetailsType[]>([]);
   const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {

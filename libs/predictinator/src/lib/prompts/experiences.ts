@@ -28,7 +28,6 @@ const experiencesParsePrediction = async (
   if (!parsed || !parsed.experience) {
     return {
       error: 'Failed to parse response from GPT-3',
-      prediction: null,
     };
   }
   return {
@@ -51,7 +50,7 @@ const experiencesPromptTemplate = async ({
     },
     {
       name: 'Job Experiences',
-      value: job.experience,
+      value: job.experience || '',
     },
   ]);
   // NEED TO CHANGE THIS PROMPT

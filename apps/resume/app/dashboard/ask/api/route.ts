@@ -1,19 +1,13 @@
-import { PredictQuestionBody, PredictResponse } from '@libs/types';
+import {
+  PredictQuestionBody,
+  PredictQuestionRequestBody,
+  PredictResponse,
+  TypeOfPrediction,
+} from '@libs/types';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { questionAnswerPredict } from './controller';
-
-export enum TypeOfPrediction {
-  QUESTION = 'QUESTION',
-}
-
-export type PredictQuestionRequestBody = {
-  jobDescription: string;
-  question: string;
-  typeOfPrediction: TypeOfPrediction;
-  job_id?: string;
-};
 
 const typeOfPredictionToUrl = {
   [TypeOfPrediction.QUESTION]: questionAnswerPredict,

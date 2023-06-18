@@ -5,8 +5,8 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 import type { NextRequest } from 'next/server';
-import { OnboardingSubmit } from '../../onboarding/page';
 import { Prisma } from '@prisma/client';
+import { OnboardingSubmit } from '@libs/types';
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);

@@ -9,7 +9,6 @@ import {
   PlusIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { IconType } from './editable-input';
 import { deepEqual } from '@libs/helpers';
 import {
   Accordion,
@@ -17,6 +16,7 @@ import {
   AccordionItem,
   AccordionPanel,
 } from '@chakra-ui/react';
+import { IconType } from '@libs/types';
 
 type JobsResponse = Database['public']['Tables']['jobs']['Row'];
 type JobsResponseInsert = Database['public']['Tables']['jobs']['Insert'];

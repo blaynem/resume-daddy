@@ -1,14 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { PredictQuestionRequestBody } from '../api/predict/route';
 import { Select, Spinner } from '@chakra-ui/react';
 import { EditableInput } from '../editable-input';
-import { PredictResponse } from '@libs/types';
-
-export enum TypeOfPrediction {
-  QUESTION = 'QUESTION',
-}
+import {
+  PredictQuestionRequestBody,
+  PredictResponse,
+  TypeOfPrediction,
+} from '@libs/types';
 
 const options = [
   // {
@@ -61,7 +60,7 @@ export default function ResumesPage() {
       question,
       typeOfPrediction,
     };
-    const resp: PredictResponse = await fetch('api/predict', {
+    const resp: PredictResponse = await fetch('/dashboard/ask/api', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

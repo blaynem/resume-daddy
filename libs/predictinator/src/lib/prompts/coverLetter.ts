@@ -63,7 +63,6 @@ const coverLetterParsePrediction = async (
   if (!parsed || !parsed.answer) {
     return {
       error: 'Failed to parse response from GPT-3',
-      prediction: null,
     };
   }
   return {

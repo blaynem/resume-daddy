@@ -1,11 +1,6 @@
-import { OnboardingSubmit } from '../../../onboarding/page';
 import prisma from '../../../../clients/prisma';
 import { NextRequest, NextResponse } from 'next/server';
-
-export type OnboardingSubmitResponse = {
-  id: string | null;
-  error?: string;
-};
+import { OnboardingSubmit, OnboardingSubmitResponse } from '@libs/types';
 
 // Store data in the temo signup table
 export async function POST(

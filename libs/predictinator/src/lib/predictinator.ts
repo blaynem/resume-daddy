@@ -16,10 +16,13 @@ export type PredictinatorResponse =
       error: string;
     };
 
-export type ParsePrediction = {
-  prediction: string | null;
-  error?: string;
-};
+export type ParsePrediction =
+  | {
+      prediction: string;
+    }
+  | {
+      error: string;
+    };
 
 type Predictinator = {
   coverLetterPredict: (
@@ -80,7 +83,10 @@ export const Predictinator = (openAIApiKey: string): Predictinator => {
   const gptClient = gptTurboModel(openAIApiKey);
 
   return {
-    coverLetterPredict: async (jobDescription, resume) => {
+    coverLetterPredict: async (
+      jobDescription,
+      resume
+    ): Promise<PredictinatorResponse> => {
       try {
         if (!jobDescription || !resume) {
           throw new Error('Missing fields');
@@ -93,7 +99,7 @@ export const Predictinator = (openAIApiKey: string): Predictinator => {
         const parsedPrediction = await coverLetterPredict.parsePrediction(
           predictResponse
         );
-        if (parsedPrediction.error) {
+        if ('error' in parsedPrediction) {
           throw new Error(parsedPrediction.error);
         }
         return {
@@ -103,10 +109,13 @@ export const Predictinator = (openAIApiKey: string): Predictinator => {
           },
         };
       } catch (err) {
-        return { error: err.message, data: null };
+        return { error: (err as Error).message, data: null };
       }
     },
-    resumeRewritePredict: async (jobDescription, resume) => {
+    resumeRewritePredict: async (
+      jobDescription,
+      resume
+    ): Promise<PredictinatorResponse> => {
       try {
         if (!jobDescription || !resume) {
           throw new Error('Missing fields');
@@ -119,7 +128,7 @@ export const Predictinator = (openAIApiKey: string): Predictinator => {
         const parsedPrediction = await resumeRewritePredict.parsePrediction(
           predictResponse
         );
-        if (parsedPrediction.error) {
+        if ('error' in parsedPrediction) {
           throw new Error(parsedPrediction.error);
         }
         return {
@@ -129,10 +138,10 @@ export const Predictinator = (openAIApiKey: string): Predictinator => {
           },
         };
       } catch (err) {
-        return { error: err.message, data: null };
+        return { error: (err as Error).message, data: null };
       }
     },
-    experiencesPredict: async (job: jobs) => {
+    experiencesPredict: async (job: jobs): Promise<PredictinatorResponse> => {
       try {
         if (!job) {
           throw new Error('Missing fields');
@@ -142,7 +151,7 @@ export const Predictinator = (openAIApiKey: string): Predictinator => {
         const parsedPrediction = await experiencesPredict.parsePrediction(
           predictResponse
         );
-        if (parsedPrediction.error) {
+        if ('error' in parsedPrediction) {
           throw new Error(parsedPrediction.error);
         }
         return {
@@ -152,14 +161,14 @@ export const Predictinator = (openAIApiKey: string): Predictinator => {
           },
         };
       } catch (err) {
-        return { error: err.message, data: null };
+        return { error: (err as Error).message, data: null };
       }
     },
     questionAnswerPredict: async (
       jobDescription: string,
       resume: string,
       question: string
-    ) => {
+    ): Promise<PredictinatorResponse> => {
       try {
         if (!jobDescription || !resume || !question) {
           throw new Error('Missing fields');
@@ -173,7 +182,7 @@ export const Predictinator = (openAIApiKey: string): Predictinator => {
         const parsedPrediction = await questionPredict.parsePrediction(
           predictResponse
         );
-        if (parsedPrediction.error) {
+        if ('error' in parsedPrediction) {
           throw new Error(parsedPrediction.error);
         }
         return {
@@ -183,7 +192,7 @@ export const Predictinator = (openAIApiKey: string): Predictinator => {
           },
         };
       } catch (err) {
-        return { error: err.message, data: null };
+        return { error: (err as Error).message, data: null };
       }
     },
   };
