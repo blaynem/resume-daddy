@@ -53,7 +53,7 @@ export default function Dashboard() {
     // This would stop us from needing to store the dbJobs in state
     // https://supabase.com/docs/reference/javascript/subscribe
     const fetchThings = async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('jobs')
         .select()
         .order('user_job_order');
@@ -118,10 +118,12 @@ export default function Dashboard() {
     const jobsUpsertResp = supabase.from('jobs').upsert(editedJobs);
     // make fetch to delete jobs
     // TODO: IF the jobs delete fails we should handle the error
-    const jobsDeleteResp = fetch('/api/user/jobs', {
-      method: 'DELETE',
-      body: JSON.stringify(deletedJobs.map((job) => job.id)),
-    }).then((res) => res.json());
+    const jobsDeleteResp = fetch(
+      `/api/user/jobs?deleteIds=${deletedJobs.map((job) => job.id).join(',')}`,
+      {
+        method: 'DELETE',
+      }
+    ).then((res) => res.json());
 
     // Wait for both to finish
     await Promise.all([jobsUpsertResp, jobsDeleteResp]);

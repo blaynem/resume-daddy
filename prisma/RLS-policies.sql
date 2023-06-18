@@ -54,20 +54,20 @@ USING (auth.uid() = user_id);
 ---------------
 ----INSERTs----
 
--- Interests Update
-CREATE POLICY "Update based on user_id" ON "public"."interests"
+-- Interests Insert
+CREATE POLICY "Insert based on user_id" ON "public"."interests"
 AS PERMISSIVE FOR INSERT
 TO public
 WITH CHECK (auth.uid() = user_id);
 
--- Jobs Update
-CREATE POLICY "Update based on user_id" ON "public"."jobs"
+-- Jobs Insert
+CREATE POLICY "Insert based on user_id" ON "public"."jobs"
 AS PERMISSIVE FOR INSERT
 TO public
 WITH CHECK (auth.uid() = user_id);
 
--- Skills Update
-CREATE POLICY "Update based on user_id" ON "public"."skills"
+-- Skills Insert
+CREATE POLICY "Insert based on user_id" ON "public"."skills"
 AS PERMISSIVE FOR INSERT
 TO public
 WITH CHECK (auth.uid() = user_id);

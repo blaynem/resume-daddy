@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '../../../../../clients/prisma';
 import type { ConfirmEmailPostBody } from '../../../../onboarding/confirm-email/page';
 import { OnboardingSubmit } from '../../../../onboarding/page';
-import { createRouteHandlerSupabaseClient } from '@supabase/auth-helpers-nextjs';
-import { cookies, headers } from 'next/headers';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { Prisma } from '@prisma/client';
 
 /**
@@ -29,8 +29,7 @@ export type ConfirmEmailPostResponse = {
   error?: string;
 };
 export async function POST(req: NextRequest, res: NextResponse) {
-  const supabase = createRouteHandlerSupabaseClient({
-    headers,
+  const supabase = createRouteHandlerClient({
     cookies,
   });
   try {
