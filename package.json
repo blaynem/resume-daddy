@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "build:client": "npm run generate:prisma && nx build resume --prod",
+    "generate:prisma": "npx prisma generate",
     "generate:supabase": "node ./scripts/gen-types.js"
   },
   "private": true,
