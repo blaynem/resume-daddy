@@ -2,13 +2,28 @@ import { z } from 'zod';
 import { PromptTemplate } from 'langchain/prompts';
 import { StructuredOutputParser } from 'langchain/output_parsers';
 import { createContextPrompt } from './helpers';
-import { ParsePrediction } from '../predictinator';
+import { ParsePrediction, PredictionBuilder } from '../../types';
 
 const questionAnswerFormat = z.object({
   answer: z.string().describe('The answer to the question:'),
 });
 
 type QuestionPredictResponse = z.infer<typeof questionAnswerFormat>;
+
+export type QuestionPromptTemplateArgs = {
+  /**
+   * User pasted job description they are applying to.
+   */
+  jobDescription: string;
+  /**
+   * User's resume.
+   */
+  resume: string;
+  /**
+   * Question to answer for the context of the job description.
+   */
+  question: string;
+};
 
 const predictionParser =
   StructuredOutputParser.fromZodSchema(questionAnswerFormat);
@@ -38,11 +53,7 @@ const questionPromptTemplate = async ({
   jobDescription,
   resume,
   question,
-}: {
-  jobDescription: string;
-  resume: string;
-  question: string;
-}) => {
+}: QuestionPromptTemplateArgs) => {
   const context = createContextPrompt([
     {
       name: 'My Resume',
@@ -77,7 +88,8 @@ Please answer the question in the context of the job description and your resume
   return prompt;
 };
 
-export const questionPredict = {
-  promptTemplate: questionPromptTemplate,
-  parsePrediction: questionParsePrediction,
-};
+export const questionPromptBuilder: PredictionBuilder<QuestionPromptTemplateArgs> =
+  {
+    promptTemplate: questionPromptTemplate,
+    parsePrediction: questionParsePrediction,
+  };

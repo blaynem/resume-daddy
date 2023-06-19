@@ -41,11 +41,11 @@ export const questionAnswerPredict = async (
     // Parse resume for prompt
     const parsedResume = parseResumeForPrompts(userFetch.jobs);
     // Make fetch to predictinator
-    const response = await predictinator.questionAnswerPredict(
+    const response = await predictinator.questionAnswerPredict({
       jobDescription,
-      parsedResume,
-      question
-    );
+      resume: parsedResume,
+      question,
+    });
     if ('error' in response) {
       throw new Error(response.error);
     }
@@ -53,14 +53,14 @@ export const questionAnswerPredict = async (
     await prisma.predictions.create({
       data: {
         user_id: user_id,
-        prediction: response.data.prediction,
+        prediction: response.prediction,
         question,
         job_description: jobDescription,
         resume: parsedResume,
         type: PredictionType.FREE_FORM_QUESTION,
       },
     });
-    return { data: response.data.prediction };
+    return { data: response.prediction };
   } catch (err) {
     console.error(err);
     return { error: 'Error API', data: null };

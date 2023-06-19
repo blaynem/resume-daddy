@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { PromptTemplate } from 'langchain/prompts';
 import { StructuredOutputParser } from 'langchain/output_parsers';
 import { createContextPrompt } from './helpers';
-import { ParsePrediction } from '../predictinator';
+import { ParsePrediction, PredictionBuilder } from '../../types';
 
 /**
  * Structure of prompt:
@@ -37,13 +37,6 @@ import { ParsePrediction } from '../predictinator';
  *
  */
 
-/**
- * Each prompt file should have the following:
- * 1. A prompt template
- * 2. A parser function
- * 3. The exported return type of the formatted prompt
- */
-
 const questionAnswerFormat = z.object({
   answer: z.string().describe('The new cover letter.'),
 });
@@ -70,13 +63,21 @@ const coverLetterParsePrediction = async (
   };
 };
 
+export type CoverLetterTemplateArgs = {
+  /**
+   * User pasted job description they are applying to.
+   */
+  jobDescription: string;
+  /**
+   * User's resume.
+   */
+  resume: string;
+};
+
 const coverLetterPromptTemplate = async ({
   jobDescription,
   resume,
-}: {
-  jobDescription: string;
-  resume: string;
-}): Promise<string> => {
+}: CoverLetterTemplateArgs): Promise<string> => {
   const context = createContextPrompt([
     {
       name: 'My Resume',
@@ -103,7 +104,8 @@ Keep the cover letter very short, three paragraphs at most. Keep the language re
   return prompt;
 };
 
-export const coverLetterPredict = {
-  promptTemplate: coverLetterPromptTemplate,
-  parsePrediction: coverLetterParsePrediction,
-};
+export const coverLetterPromptBuilder: PredictionBuilder<CoverLetterTemplateArgs> =
+  {
+    promptTemplate: coverLetterPromptTemplate,
+    parsePrediction: coverLetterParsePrediction,
+  };
