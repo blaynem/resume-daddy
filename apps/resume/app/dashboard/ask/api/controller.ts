@@ -1,6 +1,7 @@
 import type {
   PredictResponse,
   PredictQuestionBody,
+  PredictResumeBody,
 } from '@libs/types/big-daddy';
 import { parseResumeForPrompts } from '@libs/predictinator/src';
 import prisma from '../../../../clients/prisma';
@@ -58,6 +59,46 @@ export const questionAnswerPredict = async (
         job_description: jobDescription,
         resume: parsedResume,
         type: PredictionType.FREE_FORM_QUESTION,
+      },
+    });
+    return { data: response.data.prediction };
+  } catch (err) {
+    console.error(err);
+    return { error: 'Error API', data: null };
+  }
+};
+
+export const resumeTailorPredict = async (
+  body: PredictResumeBody
+): Promise<PredictResponse> => {
+  try {
+    const { jobDescription, user_id } = body;
+    if (!jobDescription) {
+      return { error: 'No job description provided', data: null };
+    }
+    const userFetch = await doUserFetch(user_id);
+    if (!userFetch || !userFetch.jobs) {
+      throw new Error('No user found');
+    }
+    // Parse resume for prompt
+    const parsedResume = parseResumeForPrompts(userFetch.jobs);
+    // Make fetch to predictinator
+    const response = await predictinator.resumeTailorPredict(
+      jobDescription,
+      parsedResume
+    );
+    if ('error' in response) {
+      throw new Error(response.error);
+    }
+    // Save prediction to db
+    await prisma.predictions.create({
+      data: {
+        user_id: user_id,
+        prediction: response.data.prediction,
+        job_description: jobDescription,
+        question: '',
+        resume: parsedResume,
+        type: PredictionType.RESUME_TAILOR,
       },
     });
     return { data: response.data.prediction };

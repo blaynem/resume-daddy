@@ -6,6 +6,7 @@ import {
 } from './prompts';
 import { gptTurboModel } from '../clients/openAI';
 import { jobs } from '@prisma/client';
+import { resumeTailorPredict } from './prompts/resumeTailor';
 
 export type PredictinatorResponse =
   | {
@@ -67,6 +68,17 @@ type Predictinator = {
      * Question to answer for the context of the job description.
      */
     question: string
+  ) => Promise<PredictinatorResponse>;
+
+  resumeTailorPredict: (
+    /**
+     * User pasted job description they are applying to.
+     */
+    jobDescription: string,
+    /**
+     * User's resume.
+     */
+    resume: string
   ) => Promise<PredictinatorResponse>;
 };
 
@@ -180,6 +192,36 @@ export const Predictinator = (openAIApiKey: string): Predictinator => {
         });
         const predictResponse = await gptClient.call(prompt);
         const parsedPrediction = await questionPredict.parsePrediction(
+          predictResponse
+        );
+        if ('error' in parsedPrediction) {
+          throw new Error(parsedPrediction.error);
+        }
+        return {
+          data: {
+            prompt: prompt,
+            prediction: parsedPrediction.prediction,
+          },
+        };
+      } catch (err) {
+        return { error: (err as Error).message, data: null };
+      }
+    },
+
+    resumeTailorPredict: async (
+      jobDescription,
+      resume
+    ): Promise<PredictinatorResponse> => {
+      try {
+        if (!jobDescription || !resume) {
+          throw new Error('Missing fields');
+        }
+        const prompt = await resumeTailorPredict.promptTemplate({
+          jobDescription,
+          resume,
+        });
+        const predictResponse = await gptClient.call(prompt);
+        const parsedPrediction = await resumeTailorPredict.parsePrediction(
           predictResponse
         );
         if ('error' in parsedPrediction) {

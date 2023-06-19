@@ -1,5 +1,6 @@
 export enum TypeOfPrediction {
   QUESTION = 'QUESTION',
+  RESUME_TAILOR = 'RESUME_TAILOR',
 }
 
 export type PredictQuestionRequestBody = {
