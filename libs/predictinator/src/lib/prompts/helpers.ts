@@ -1,6 +1,6 @@
 import { jobs } from '@prisma/client';
 
-export type PromptContext = {
+type PromptContext = {
   name: string;
   value: string;
 };
