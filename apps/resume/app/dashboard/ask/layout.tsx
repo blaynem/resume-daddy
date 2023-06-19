@@ -14,7 +14,7 @@ export default function RootLayout({
         <h2 className="text-base font-semibold leading-7 text-gray-900">Ask</h2>
         <p className="text-sm leading-6 text-gray-500">
           Need help with your job application? Fill out the form below and let
-          Resume Daddy create the perfect response based on your profile.
+          us create the perfect response based on your profile.
         </p>
       </header>
       {children}
