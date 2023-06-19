@@ -1,5 +1,9 @@
 'use client';
-import { BookOpenIcon, DocumentTextIcon, HomeModernIcon } from '@heroicons/react/24/outline';
+import {
+  BookOpenIcon,
+  DocumentTextIcon,
+  HomeModernIcon,
+} from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import React from 'react';
 import { usePathname } from 'next/navigation';
@@ -10,7 +14,7 @@ export const Sidebar = () => {
     {
       href: '/dashboard',
       icon: HomeModernIcon,
-      label: 'Resume',
+      label: 'Profile',
       insertBreak: true,
     },
     {

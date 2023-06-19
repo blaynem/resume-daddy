@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Select, Spinner } from '@chakra-ui/react';
+import { Divider, Select, Spinner } from '@chakra-ui/react';
 import { EditableInput } from '../editable-input';
 import {
   PredictQuestionRequestBody,
@@ -82,65 +82,68 @@ export default function ResumesPage() {
   };
   return (
     <>
-      <div className="mb-4 w-full">
-        <p className="text-md font-semibold">What do you need help with?</p>
-        <Select
-          // Disabled for now, we only support questions
-          // disabled={submitting}
-          disabled
-          onChange={(e) => setQuestionType(e.target.value)}
-          value={questionType}
-          className="pt-0"
-          placeholder="Select option"
-        >
-          {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </Select>
-      </div>
-      <EditableInput
-        value={jobDescription}
-        isTextarea
-        header="Job Description"
-        isEditMode
-        disabled={submitting}
-        onChange={setJobDescription}
-        placeholder="We are looking for a software engineer with 5+ years of experience in React and Node.js."
-      />
-      <EditableInput
-        value={question}
-        isTextarea
-        header="Question"
-        isEditMode
-        disabled={submitting}
-        onChange={setQuestion}
-        placeholder="What is your greatest weakness?"
-      />
-      {submitting ? (
+      <Divider />
+      <div className="p-2">
         <div className="mb-4 w-full">
-          <p className="text-md font-semibold">Response</p>
-          <Spinner />
+          <p className="text-md font-semibold">What do you need help with?</p>
+          <Select
+            // Disabled for now, we only support questions
+            // disabled={submitting}
+            disabled
+            onChange={(e) => setQuestionType(e.target.value)}
+            value={questionType}
+            className="pt-0"
+            placeholder="Select option"
+          >
+            {options.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </Select>
         </div>
-      ) : (
         <EditableInput
-          value={response}
+          value={jobDescription}
           isTextarea
-          header="Response"
-          isEditMode={false}
-          onChange={setResponse}
-          placeholder="Response will appear here..."
-        />
-      )}
-      <div className="w-full flex justify-end">
-        <button
+          header="Job Description"
+          isEditMode
           disabled={submitting}
-          onClick={onSubmit}
-          className="py-1 px-3 border rounded disabled:cursor-not-allowed disabled:border-slate-400 disabled:hover:text-slate-400 disabled:hover:bg-transparent border-violet-400 hover:text-white hover:bg-violet-400"
-        >
-          Submit
-        </button>
+          onChange={setJobDescription}
+          placeholder="We are looking for a software engineer with 5+ years of experience in React and Node.js."
+        />
+        <EditableInput
+          value={question}
+          isTextarea
+          header="Question"
+          isEditMode
+          disabled={submitting}
+          onChange={setQuestion}
+          placeholder="What is your greatest weakness?"
+        />
+        {submitting ? (
+          <div className="mb-4 w-full">
+            <p className="text-md font-semibold">Response</p>
+            <Spinner />
+          </div>
+        ) : (
+          <EditableInput
+            value={response}
+            isTextarea
+            header="Response"
+            isEditMode={false}
+            onChange={setResponse}
+            placeholder="Response will appear here..."
+          />
+        )}
+        <div className="w-full flex justify-end">
+          <button
+            disabled={submitting}
+            onClick={onSubmit}
+            className="py-1 px-3 border rounded disabled:cursor-not-allowed disabled:border-slate-400 disabled:hover:text-slate-400 disabled:hover:bg-transparent border-violet-400 hover:text-white hover:bg-violet-400"
+          >
+            Submit
+          </button>
+        </div>
       </div>
     </>
   );
