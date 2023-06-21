@@ -10,6 +10,15 @@
 - Landing page makes sense
 - test with some really bad data
 
+- Example page where they can interactively see how it works. Maybe using my own resume as an example?
+- Change Password flow
+- What other `Ask` things can we create?
+- A "How To" guide would be great
+- Do we need an icon in the navbar? What can it be instead?
+- Add ability to hint towards a prediction?
+- add error handling
+- User can't signup if they use 2 separate instances of a browser. I.e. a pc to signup -> phone to confirm email. We'll need to find a better solution to the `/auth/callback` for creating the user.
+
 # How to run
 
 Install Deps
@@ -80,7 +89,7 @@ npx supabase start
 # Apply the Prisma DB Migrations
 npx prisma migrate dev
 # Generate the types
-yarn run gen-types:supabase
+yarn run generate:supabase
 # Close the supabase cli
 npx supabase stop
 ```
