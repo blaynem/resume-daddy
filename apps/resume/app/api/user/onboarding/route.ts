@@ -20,6 +20,17 @@ export async function POST(
       throw new Error('Not authenticated');
     }
 
+    const user = await prisma.user.findFirst({
+      where: {
+        email: onboardingData.email,
+      },
+    });
+
+    if (user) {
+      // If the user already exists, we can just return the user id and not onboard anything
+      return NextResponse.json({ id: authUser.id });
+    }
+
     await prisma.user.create({
       data: {
         id: authUser.id,
