@@ -3,8 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import JobDetails from './job-details';
 import Modal from '../../wrappers/modal';
-import { useDisclosure } from '@chakra-ui/react';
-import SignInForm from '../../components/sign-in';
+import { Spinner, useDisclosure } from '@chakra-ui/react';
 import { useSupabase } from '../../clients/supabase-provider';
 import {
   FormState,
@@ -12,7 +11,7 @@ import {
   OnboardingSubmit,
   OnboardingSubmitResponse,
 } from '@libs/types';
-import { getBaseURL } from '@libs/helpers';
+import { useRouter } from 'next/navigation';
 
 const initialFormState: FormState = {
   firstName: '',
@@ -36,13 +35,14 @@ const templateJobDetails: JobDetailsType = {
 // - We then tell them to check their email for a verification link.
 // - Once they click the link we log them in and send them to the /welcome page.
 export default function Onboarding() {
+  const router = useRouter();
   const { supabase } = useSupabase();
   const { isOpen, onOpen: openModal, onClose } = useDisclosure();
   const initialRef = useRef<HTMLInputElement>(null);
-  const [password, setPassword] = useState('');
   const [formState, setFormState] = useState<FormState>(initialFormState);
+  const [otp, setOtp] = useState('');
+  const [apiLoading, setApiLoading] = useState(false);
   const [allJobDetails, setAllJobDetails] = useState<JobDetailsType[]>([]);
-  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     setAllJobDetails([templateJobDetails]);
@@ -56,32 +56,62 @@ export default function Onboarding() {
     return;
   };
 
-  const handleSubmit = async (e: any) => {
-    // TODO: Validate form and show errors before opening modal
+  const handleNext = async (e: any) => {
     e.preventDefault();
+    // TODO: require email to be filled out
+    // TODO: Validate form and show errors before opening modal?
+    // Only fire once
+    if (apiLoading || isOpen) return;
+    setApiLoading(true);
+
+    // Fire off the email sign up
+    const signup = await supabase.auth.signInWithOtp({
+      email: formState.email,
+    });
+    setApiLoading(false);
+    console.log('---signup', signup);
     openModal();
   };
 
-  const handleSignUpClick = async () => {
-    // Fire off the email sign up
-    const signup = await supabase.auth.signUp({
+  /**
+   * `next` - signs in with OTP - which sends a OTP email to email.
+   * `signInWithOtp`
+   * We need to alter this form to instead have `next` send off the OTP email.
+   * Then we need to have a modal that pops up and asks for the OTP code.
+   *
+   * `opened modal` - asks for OTP code
+   * `verifyOtp`
+   * Once the user enters the OTP code we can send off the form data to the backend.
+   * Send the returned auth to onboarding api
+   * -- We skip the entire signup db table process nonsense
+   * -- in the backend we can check if user has an id on the request via supabase headers, they should since verifyOtp is called
+   * -- We can then create the user via serverless fn
+   *
+   * We then push them to /dashboard
+   */
+  const handleConfirm = async () => {
+    if (apiLoading || !otp) return;
+
+    setApiLoading(true);
+    // Verify OTP from email
+    const verifiedOtp = await supabase.auth.verifyOtp({
       email: formState.email,
-      password,
-      options: {
-        emailRedirectTo: `${getBaseURL()}/auth/callback`,
-      },
+      token: otp,
+      type: 'email',
     });
-    const signupId = signup.data?.user?.id || '';
-    if (signup.error || !signupId) {
-      // todo: Handle error
+
+    if (verifiedOtp.error || !verifiedOtp.data.user) {
+      // TODO: Handle error
+      setApiLoading(false);
+      return;
     }
 
-    // Set fetching state to started
     const submitState: OnboardingSubmit = {
       ...formState,
       jobs: allJobDetails,
-      signupId,
+      signupId: verifiedOtp.data.user.id,
     };
+    // Submit the onboarding form to backend
     const submittedRes: OnboardingSubmitResponse = await fetch(
       '/api/user/onboarding',
       {
@@ -92,12 +122,12 @@ export default function Onboarding() {
 
     if (submittedRes.error || !submittedRes.id) {
       // todo: Handle error
+      console.error('---submittedRes', submittedRes);
+      setApiLoading(false);
+      return;
     }
 
-    setShowSuccess(true);
-    setFormState(initialFormState);
-    setPassword('');
-    setAllJobDetails([templateJobDetails]);
+    router.push('/dashboard');
     return;
   };
 
@@ -110,29 +140,45 @@ export default function Onboarding() {
             isOpen={isOpen}
             onClose={() => {
               onClose();
-              setPassword('');
             }}
           >
-            {showSuccess ? (
-              <>
-                <div>Confirmation sent to your email</div>
-              </>
-            ) : (
-              <SignInForm
-                header="Enter a password to finish up"
-                submitText="Sign up"
-                passwordRef={initialRef}
-                hideNote
-                hideForgotPassword
-                onSubmit={handleSignUpClick}
-                email={formState.email}
-                password={password}
-                onEmailChange={(e) =>
-                  setFormState({ ...formState, email: e.target.value })
-                }
-                onPasswordChange={(e) => setPassword(e.target.value)}
-              />
-            )}
+            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+              <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+                <img
+                  className="mx-auto h-10 w-auto"
+                  src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                  alt="Your Company"
+                />
+                <h2 className="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                  {'Enter OTP code'}
+                </h2>
+                <p className="mt-2 text-center text-sm leading-5 text-gray-600 max-w">
+                  {'Enter the OTP code sent to your email'}
+                </p>
+              </div>
+
+              <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-sm">
+                <form className="space-y-6" action="#" method="POST">
+                  <div className="mt-2">
+                    <input
+                      id="otp"
+                      name="otp"
+                      required
+                      value={otp}
+                      placeholder="XXXXXX"
+                      onChange={(e) => setOtp(e.target.value)}
+                      className="block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                  <button
+                    onClick={handleConfirm}
+                    className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    Confirm
+                  </button>
+                </form>
+              </div>
+            </div>
           </Modal>
           <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12">
@@ -286,10 +332,11 @@ export default function Onboarding() {
 
           <div className="mt-6 flex items-center justify-end gap-x-6">
             <button
-              onClick={handleSubmit}
+              disabled={apiLoading}
+              onClick={handleNext}
               className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Next
+              {apiLoading ? <Spinner /> : 'Next'}
             </button>
           </div>
         </form>
