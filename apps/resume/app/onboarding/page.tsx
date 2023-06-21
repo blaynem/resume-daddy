@@ -127,7 +127,8 @@ export default function Onboarding() {
       return;
     }
 
-    router.push('/dashboard');
+    // We can just refresh the router, the user will be logged in and redirected to /dashboard from the layout.tsx
+    router.refresh();
     return;
   };
 
