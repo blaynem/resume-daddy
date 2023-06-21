@@ -65,11 +65,10 @@ export default function Onboarding() {
     setApiLoading(true);
 
     // Fire off the email sign up
-    const signup = await supabase.auth.signInWithOtp({
+    await supabase.auth.signInWithOtp({
       email: formState.email,
     });
     setApiLoading(false);
-    console.log('---signup', signup);
     openModal();
   };
 
@@ -127,8 +126,6 @@ export default function Onboarding() {
       return;
     }
 
-    // We can just refresh the router, the user will be logged in and redirected to /dashboard from the layout.tsx
-    router.refresh();
     return;
   };
 
