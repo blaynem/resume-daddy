@@ -121,17 +121,6 @@ model interests {
   user          user?    @relation(fields: [user_id], references: [id])
 }
 
-/// This table is used to store the raw resume data that we get from the user
-/// This is only temporary so that we can get the user through sign up flow easier.
-/// -- As all things "temporary", this will probably be here for a while. 5/24/2023
-model signup {
-  id             String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  data           Json      @db.Json
-  created_at     DateTime? @default(now())
-  completed      Boolean?  @default(false)
-  date_completed DateTime?
-}
-
 enum StatusType {
   PENDING
   ACCEPTED
