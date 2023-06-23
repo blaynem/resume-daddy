@@ -3,7 +3,7 @@ import { PromptTemplate } from 'langchain/prompts';
 import { StructuredOutputParser } from 'langchain/output_parsers';
 import { createContextPrompt } from './helpers';
 import { jobs } from '@prisma/client';
-import { ParsePrediction } from '../predictinator';
+import { ParsePrediction, PredictionBuilder } from '../../types';
 
 const questionAnswerFormat = z.object({
   experience: z
@@ -13,7 +13,13 @@ const questionAnswerFormat = z.object({
     .describe('The list of experiences that were rephrased'),
 });
 
-export type ExperiencesPredictResponse = z.infer<typeof questionAnswerFormat>;
+export type ExperiencesTemplateArgs = {
+  /**
+   * Individiual job object
+   */
+  job: jobs;
+};
+type ExperiencesPredictResponse = z.infer<typeof questionAnswerFormat>;
 
 const predictionParser =
   StructuredOutputParser.fromZodSchema(questionAnswerFormat);
@@ -74,7 +80,8 @@ Please embellish the details as much as you see fit, but only include experience
   return prompt;
 };
 
-export const experiencesPredict = {
+type ExperiencesPromptBuilder = PredictionBuilder<ExperiencesTemplateArgs>;
+export const experiencesPromptBuilder: ExperiencesPromptBuilder = {
   promptTemplate: experiencesPromptTemplate,
   parsePrediction: experiencesParsePrediction,
 };

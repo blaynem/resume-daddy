@@ -174,7 +174,16 @@ export default function Dashboard() {
   };
 
   return (
-    <Accordion defaultIndex={[0]} allowMultiple className="pt-6">
+    <div className="px-4">
+      <header className="mb-2">
+        <h2 className="text-base font-semibold leading-7 text-gray-900">
+          Profile
+        </h2>
+        <p className="text-sm leading-6 text-gray-500">
+          All of the job information you provide is used to help guide you when
+          filling out job applications.
+        </p>
+      </header>
       <div className="absolute top-0 right-0">
         {!isEditMode ? (
           <>
@@ -204,135 +213,138 @@ export default function Dashboard() {
           </>
         )}
       </div>
-      {tempJobsEdits.map((job, index) => (
-        <AccordionItem key={job.id}>
-          <AccordionButton className="pb-0">
-            <EditableInput
-              isEditMode={isEditMode}
-              header="Job Title"
-              value={job.title}
-              onChange={(value) => {
-                const newJob = { ...job, title: value };
-                editJob(index, newJob);
-              }}
-              onDeleteClick={() => onJobDelete(job.id)}
-            />
-          </AccordionButton>
 
-          <AccordionPanel className="pt-0">
-            <EditableInput
-              isEditMode={isEditMode}
-              header="Company Name"
-              value={job.company_name || ''}
-              onChange={(value) => {
-                const newJob = { ...job, company_name: value };
-                editJob(index, newJob);
-              }}
-            />
-            <EditableInput
-              isEditMode={isEditMode}
-              header="Summary"
-              value={job.summary}
-              isTextarea
-              onChange={(value) => {
-                const newJob = { ...job, summary: value };
-                editJob(index, newJob);
-              }}
-            />
-            <EditableInput
-              isEditMode={isEditMode}
-              header="Experience"
-              value={job.experience || ''}
-              isTextarea
-              onChange={(value) => {
-                const newJob = { ...job, experience: value };
-                editJob(index, newJob);
-              }}
-            />
-            <EditableInput
-              isEditMode={isEditMode}
-              header="Skills"
-              value={job.temp_skills || ''}
-              isTextarea
-              onChange={(value) => {
-                const newJob = { ...job, temp_skills: value };
-                editJob(index, newJob);
-              }}
-            />
-          </AccordionPanel>
-        </AccordionItem>
-      ))}
-      {newJobs.map((job, index) => (
-        <AccordionItem key={job.id}>
-          <AccordionButton key={index} className="pb-0 relative">
-            <div className="absolute right-0 top-0">
-              <IconButton
-                iconSrText="Cancel"
-                iconType={XMarkIcon as IconType}
-                onClick={() => onNewJobDelete(index)}
-                padding="p-0 pr-1 pt-1"
+      <Accordion defaultIndex={[0]} allowMultiple>
+        {tempJobsEdits.map((job, index) => (
+          <AccordionItem key={job.id}>
+            <AccordionButton className="pb-0 px-2">
+              <EditableInput
+                isEditMode={isEditMode}
+                header="Job Title"
+                value={job.title}
+                onChange={(value) => {
+                  const newJob = { ...job, title: value };
+                  editJob(index, newJob);
+                }}
+                onDeleteClick={() => onJobDelete(job.id)}
               />
-              <IconButton
-                iconSrText="Save"
-                iconType={CheckIcon as IconType}
-                onClick={() => onNewJobSave(index)}
-                padding="p-0 pr-4 pt-1"
-              />
-            </div>
-            <EditableInput
-              isEditMode
-              header="Job Title"
-              value={job.title}
-              onChange={(value) => {
-                const newJob = { ...job, title: value };
-                onEditNewJob(index, newJob);
-              }}
-            />
-          </AccordionButton>
+            </AccordionButton>
 
-          <AccordionPanel>
-            <EditableInput
-              isEditMode
-              header="Company Name"
-              value={job.company_name || ''}
-              onChange={(value) => {
-                const newJob = { ...job, company_name: value };
-                onEditNewJob(index, newJob);
-              }}
-            />
-            <EditableInput
-              isEditMode
-              header="Summary"
-              value={job.summary}
-              isTextarea
-              onChange={(value) => {
-                const newJob = { ...job, summary: value };
-                onEditNewJob(index, newJob);
-              }}
-            />
-            <EditableInput
-              isEditMode
-              header="Experience"
-              value={job.experience || ''}
-              isTextarea
-              onChange={(value) => {
-                const newJob = { ...job, experience: value };
-                onEditNewJob(index, newJob);
-              }}
-            />
-            <EditableInput
-              isEditMode
-              header="Skills"
-              value={job.temp_skills || ''}
-              isTextarea
-              onChange={(value) => {
-                const newJob = { ...job, temp_skills: value };
-                onEditNewJob(index, newJob);
-              }}
-            />
-          </AccordionPanel>
-        </AccordionItem>
-      ))}
-    </Accordion>
+            <AccordionPanel className="pt-0 px-2">
+              <EditableInput
+                isEditMode={isEditMode}
+                header="Company Name"
+                value={job.company_name || ''}
+                onChange={(value) => {
+                  const newJob = { ...job, company_name: value };
+                  editJob(index, newJob);
+                }}
+              />
+              <EditableInput
+                isEditMode={isEditMode}
+                header="Summary"
+                value={job.summary}
+                isTextarea
+                onChange={(value) => {
+                  const newJob = { ...job, summary: value };
+                  editJob(index, newJob);
+                }}
+              />
+              <EditableInput
+                isEditMode={isEditMode}
+                header="Experience"
+                value={job.experience || ''}
+                isTextarea
+                onChange={(value) => {
+                  const newJob = { ...job, experience: value };
+                  editJob(index, newJob);
+                }}
+              />
+              <EditableInput
+                isEditMode={isEditMode}
+                header="Skills"
+                value={job.temp_skills || ''}
+                isTextarea
+                onChange={(value) => {
+                  const newJob = { ...job, temp_skills: value };
+                  editJob(index, newJob);
+                }}
+              />
+            </AccordionPanel>
+          </AccordionItem>
+        ))}
+        {newJobs.map((job, index) => (
+          <AccordionItem key={job.id}>
+            <AccordionButton key={index} className="pb-0 relative">
+              <div className="absolute right-0 top-0">
+                <IconButton
+                  iconSrText="Cancel"
+                  iconType={XMarkIcon as IconType}
+                  onClick={() => onNewJobDelete(index)}
+                  padding="p-0 pr-1 pt-1"
+                />
+                <IconButton
+                  iconSrText="Save"
+                  iconType={CheckIcon as IconType}
+                  onClick={() => onNewJobSave(index)}
+                  padding="p-0 pr-4 pt-1"
+                />
+              </div>
+              <EditableInput
+                isEditMode
+                header="Job Title"
+                value={job.title}
+                onChange={(value) => {
+                  const newJob = { ...job, title: value };
+                  onEditNewJob(index, newJob);
+                }}
+              />
+            </AccordionButton>
+
+            <AccordionPanel>
+              <EditableInput
+                isEditMode
+                header="Company Name"
+                value={job.company_name || ''}
+                onChange={(value) => {
+                  const newJob = { ...job, company_name: value };
+                  onEditNewJob(index, newJob);
+                }}
+              />
+              <EditableInput
+                isEditMode
+                header="Summary"
+                value={job.summary}
+                isTextarea
+                onChange={(value) => {
+                  const newJob = { ...job, summary: value };
+                  onEditNewJob(index, newJob);
+                }}
+              />
+              <EditableInput
+                isEditMode
+                header="Experience"
+                value={job.experience || ''}
+                isTextarea
+                onChange={(value) => {
+                  const newJob = { ...job, experience: value };
+                  onEditNewJob(index, newJob);
+                }}
+              />
+              <EditableInput
+                isEditMode
+                header="Skills"
+                value={job.temp_skills || ''}
+                isTextarea
+                onChange={(value) => {
+                  const newJob = { ...job, temp_skills: value };
+                  onEditNewJob(index, newJob);
+                }}
+              />
+            </AccordionPanel>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </div>
   );
 }

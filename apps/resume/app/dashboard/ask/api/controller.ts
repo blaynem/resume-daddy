@@ -7,6 +7,7 @@ import { parseResumeForPrompts } from '@libs/predictinator/src';
 import prisma from '../../../../clients/prisma';
 import predictinator from '../../../../clients/predictinator';
 import { PredictionType } from '@prisma/client';
+import { ResumeTailorPromptTemplateArgs } from '@libs/predictinator/src/lib/prompts/resumeTailor';
 
 const doUserFetch = async (id: string) => {
   return await prisma.user.findFirst({
@@ -42,11 +43,11 @@ export const questionAnswerPredict = async (
     // Parse resume for prompt
     const parsedResume = parseResumeForPrompts(userFetch.jobs);
     // Make fetch to predictinator
-    const response = await predictinator.questionAnswerPredict(
+    const response = await predictinator.questionAnswerPredict({
       jobDescription,
-      parsedResume,
-      question
-    );
+      resume: parsedResume,
+      question,
+    });
     if ('error' in response) {
       throw new Error(response.error);
     }
@@ -54,14 +55,14 @@ export const questionAnswerPredict = async (
     await prisma.predictions.create({
       data: {
         user_id: user_id,
-        prediction: response.data.prediction,
+        prediction: response.prediction,
         question,
         job_description: jobDescription,
         resume: parsedResume,
         type: PredictionType.FREE_FORM_QUESTION,
       },
     });
-    return { data: response.data.prediction };
+    return { data: response.prediction };
   } catch (err) {
     console.error(err);
     return { error: 'Error API', data: null };
@@ -83,10 +84,11 @@ export const resumeTailorPredict = async (
     // Parse resume for prompt
     const parsedResume = parseResumeForPrompts(userFetch.jobs);
     // Make fetch to predictinator
-    const response = await predictinator.resumeTailorPredict(
+    const args: ResumeTailorPromptTemplateArgs = {
       jobDescription,
-      parsedResume
-    );
+      resume: parsedResume,
+    };
+    const response = await predictinator.resumeTailorPredict(args);
     if ('error' in response) {
       throw new Error(response.error);
     }
@@ -94,14 +96,14 @@ export const resumeTailorPredict = async (
     await prisma.predictions.create({
       data: {
         user_id: user_id,
-        prediction: response.data.prediction,
+        prediction: response.prediction,
         job_description: jobDescription,
         question: '',
         resume: parsedResume,
         type: PredictionType.RESUME_TAILOR,
       },
     });
-    return { data: response.data.prediction };
+    return { data: response.prediction };
   } catch (err) {
     console.error(err);
     return { error: 'Error API', data: null };

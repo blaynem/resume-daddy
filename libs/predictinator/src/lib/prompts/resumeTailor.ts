@@ -10,6 +10,17 @@ const ResumeAnswerFormat = z.object({
 
 type ResumeTailorPredictResponse = z.infer<typeof ResumeAnswerFormat>;
 
+export type ResumeTailorPromptTemplateArgs = {
+  /**
+   * User pasted job description they are applying to.
+   */
+  jobDescription: string;
+  /**
+   * User's resume.
+   */
+  resume: string;
+};
+
 const predictionParser =
   StructuredOutputParser.fromZodSchema(ResumeAnswerFormat);
 
@@ -37,10 +48,7 @@ const resumeParsePrediction = async (
 const resumeTailorPromptTemplate = async ({
   jobDescription,
   resume,
-}: {
-  jobDescription: string;
-  resume: string;
-}) => {
+}: ResumeTailorPromptTemplateArgs) => {
   const context = createContextPrompt([
     {
       name: 'My Resume',
