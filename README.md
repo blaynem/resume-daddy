@@ -2,22 +2,27 @@
 
 - hook up supabase cli for local development
 
+## Things I Want
+
+- Easy way to ask questions in the context of MY resume
+- Ability to convert my experience into a formatted resume
+  - Rephrase a single job entry first.
+- Extension to fill out all of the info I have already provided automatically
+- A "seed" to start from when asking questions
+- Note somewhere: The more info you give us, the easier it is to craft a resume tailored to the new job role.
+
 ## NEED BEFORE RELEASE
 
-- Signup flow works
-  - Loading spinner when they click "submit" after entering password to signup
-- Login flow works
+- Set up supabase email templates to not just say "noreply@mail.app.supabase.io"
 - Landing page makes sense
 - test with some really bad data
 
 - Example page where they can interactively see how it works. Maybe using my own resume as an example?
-- Change Password flow
 - What other `Ask` things can we create?
 - A "How To" guide would be great
 - Do we need an icon in the navbar? What can it be instead?
 - Add ability to hint towards a prediction?
 - add error handling
-- User can't signup if they use 2 separate instances of a browser. I.e. a pc to signup -> phone to confirm email. We'll need to find a better solution to the `/auth/callback` for creating the user.
 
 # How to run
 
