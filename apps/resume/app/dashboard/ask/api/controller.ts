@@ -99,7 +99,7 @@ export const questionAnswerPredict = async (
 
 export const resumeTailorPredict = async (
   body: PredictResumeBody
-): Promise<PredictResponse> => {
+): Promise<PredictResponseServer> => {
   try {
     const { jobDescription, user_id } = body;
     if (!jobDescription) {
@@ -120,18 +120,17 @@ export const resumeTailorPredict = async (
     if ('error' in response) {
       throw new Error(response.error);
     }
-    // Save prediction to db
-    await prisma.predictions.create({
+
+    return {
       data: {
         user_id: user_id,
         prediction: response.prediction,
         job_description: jobDescription,
         question: '',
         resume: parsedResume,
-        type: PredictionType.RESUME_TAILOR,
+        predictionType: PredictionType.RESUME_TAILOR,
       },
-    });
-    return { data: response.prediction };
+    };
   } catch (err) {
     console.error(err);
     return { error: 'Error API', data: null };
