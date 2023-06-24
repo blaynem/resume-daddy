@@ -2,13 +2,29 @@
 
 - hook up supabase cli for local development
 
+## Things I Want
+
+- Easy way to ask questions in the context of MY resume
+- Ability to convert my experience into a formatted resume
+  - Rephrase a single job entry first.
+- Extension to fill out all of the info I have already provided automatically
+- Advanced options for "Ask"
+  - A "seed" to start from when asking questions
+- Note somewhere: The more info you give us, the easier it is to craft a resume tailored to the new job role.
+
 ## NEED BEFORE RELEASE
 
-- Signup flow works
-  - Loading spinner when they click "submit" after entering password to signup
-- Login flow works
+- If a user signs up not through the onboarding page, their resume wont be created so we should add a blank "create" that they can see on the dashboard.
+- Set up supabase email templates to not just say "noreply@mail.app.supabase.io"
 - Landing page makes sense
 - test with some really bad data
+
+- Example page where they can interactively see how it works. Maybe using my own resume as an example?
+- What other `Ask` things can we create?
+- A "How To" guide would be great
+- Do we need an icon in the navbar? What can it be instead?
+- Add ability to hint towards a prediction?
+- add error handling
 
 # How to run
 
@@ -80,9 +96,27 @@ npx supabase start
 # Apply the Prisma DB Migrations
 npx prisma migrate dev
 # Generate the types
-yarn run gen-types:supabase
-# Close the supabase cli
+yarn run generate:supabase
+# To stop the supabase cli / docker instance
 npx supabase stop
+```
+
+**Note**: You will need to add the RLS policies any time you you blow away the database. So what we can do then is open the SQL editor in the Supabase Local Studio and copy / paste the [RLS-policies.sql](./prisma/RLS-policies.sql) file into it.
+
+Supabase Local Studio URL
+[http://localhost:54323/project](http://localhost:54323/project/default)
+
+Supabase Email Server URL
+[http://localhost:54324/monitor](http://localhost:54324/monitor)
+
+If you need to seed the local supabase db with some data, you can run the below command.
+Note: We can't seed the auth.users table, but that's fine since when a user confirms their email, if they already have a user matching the email in the db, it will just sign them in.
+
+2nd Note: This won't work right now because we don't have the auth.users table seeded. So we need to figure out how to seed that table.
+
+```bash
+# If you need to seed the local DB
+yarn seed:local
 ```
 
 ## Prisma Flow

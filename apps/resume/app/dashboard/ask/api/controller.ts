@@ -1,5 +1,5 @@
 import type {
-  PredictResponse,
+  PredictResponseServer,
   PredictQuestionBody,
   PredictResumeBody,
 } from '@libs/types/big-daddy';
@@ -8,6 +8,36 @@ import prisma from '../../../../clients/prisma';
 import predictinator from '../../../../clients/predictinator';
 import { PredictionType } from '@prisma/client';
 import { ResumeTailorPromptTemplateArgs } from '@libs/predictinator/src/lib/prompts/resumeTailor';
+
+/**
+ * Saves a prediction to the database.
+ */
+export const savePredictionToDb = async ({
+  user_id,
+  prediction,
+  question,
+  job_description,
+  resume,
+  predictionType,
+}: {
+  user_id: string;
+  prediction: string;
+  question: string;
+  job_description: string;
+  resume: string;
+  predictionType: PredictionType;
+}) => {
+  return await prisma.predictions.create({
+    data: {
+      user_id,
+      prediction,
+      question,
+      job_description,
+      resume,
+      type: predictionType,
+    },
+  });
+};
 
 const doUserFetch = async (id: string) => {
   return await prisma.user.findFirst({
@@ -28,7 +58,7 @@ const doUserFetch = async (id: string) => {
 
 export const questionAnswerPredict = async (
   body: PredictQuestionBody
-): Promise<PredictResponse> => {
+): Promise<PredictResponseServer> => {
   try {
     const { jobDescription, question, user_id } = body;
     if (!jobDescription || !question) {
@@ -51,18 +81,16 @@ export const questionAnswerPredict = async (
     if ('error' in response) {
       throw new Error(response.error);
     }
-    // Save prediction to db
-    await prisma.predictions.create({
+    return {
       data: {
-        user_id: user_id,
+        user_id,
         prediction: response.prediction,
         question,
         job_description: jobDescription,
         resume: parsedResume,
-        type: PredictionType.FREE_FORM_QUESTION,
+        predictionType: PredictionType.FREE_FORM_QUESTION,
       },
-    });
-    return { data: response.prediction };
+    };
   } catch (err) {
     console.error(err);
     return { error: 'Error API', data: null };

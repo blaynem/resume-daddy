@@ -1,11 +1,15 @@
 import {
   PredictQuestionBody,
   PredictQuestionRequestBody,
-  PredictResponse,
+  PredictResponseClient,
   TypeOfPrediction,
 } from '@libs/types';
 import { NextRequest, NextResponse } from 'next/server';
-import { questionAnswerPredict, resumeTailorPredict } from './controller';
+import {
+  questionAnswerPredict,
+  resumeTailorPredict,
+  savePredictionToDb,
+} from './controller';
 import { supabaseRouter } from '../../../../clients/supabase';
 
 const typeOfPredictionToUrl = {
@@ -15,7 +19,7 @@ const typeOfPredictionToUrl = {
 
 export async function POST(
   request: NextRequest
-): Promise<NextResponse<PredictResponse>> {
+): Promise<NextResponse<PredictResponseClient>> {
   try {
     const { user } = await supabaseRouter();
     if (!user) {
@@ -38,11 +42,15 @@ export async function POST(
     const predictQuestionResp = await predictAction(predictBody);
 
     // If the req fails, throw an error
-    if (predictQuestionResp.error) {
+    if (predictQuestionResp.error || !predictQuestionResp.data) {
       throw new Error(predictQuestionResp.error);
     }
 
-    return NextResponse.json(predictQuestionResp);
+    // Save prediction to db
+    await savePredictionToDb(predictQuestionResp.data);
+
+    const predictionResp = { data: predictQuestionResp.data.prediction };
+    return NextResponse.json(predictionResp);
   } catch (error) {
     console.error(error);
     return NextResponse.json(

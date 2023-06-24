@@ -5,7 +5,7 @@ import { Divider, Select, Spinner } from '@chakra-ui/react';
 import { EditableInput } from '../editable-input';
 import {
   PredictQuestionRequestBody,
-  PredictResponse,
+  PredictResponseClient,
   TypeOfPrediction,
 } from '@libs/types';
 
@@ -65,7 +65,7 @@ export default function ResumesPage() {
       question,
       typeOfPrediction,
     };
-    const resp: PredictResponse = await fetch('/dashboard/ask/api', {
+    const resp: PredictResponseClient = await fetch('/dashboard/ask/api', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
