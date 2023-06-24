@@ -8,11 +8,13 @@
 - Ability to convert my experience into a formatted resume
   - Rephrase a single job entry first.
 - Extension to fill out all of the info I have already provided automatically
-- A "seed" to start from when asking questions
+- Advanced options for "Ask"
+  - A "seed" to start from when asking questions
 - Note somewhere: The more info you give us, the easier it is to craft a resume tailored to the new job role.
 
 ## NEED BEFORE RELEASE
 
+- If a user signs up not through the onboarding page, their resume wont be created so we should add a blank "create" that they can see on the dashboard.
 - Set up supabase email templates to not just say "noreply@mail.app.supabase.io"
 - Landing page makes sense
 - test with some really bad data

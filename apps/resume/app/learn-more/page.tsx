@@ -44,10 +44,10 @@ export default function HowToPage() {
           1. Create Your Profile
         </h2>
         <p className="mb-4 text-lg leading-8 text-gray-600">
-          {`Kickstart your job-search journey by filling out your
-            professional profile. We've made it easy for you to share your
-            entire job history, skills, achievements, and more in a
-            comprehensive format. Every detail counts!`}
+          {`Begin your journey with Resume Daddy by sharing your unique career
+          story. We've designed a simple and intuitive profile setup that lets
+          you easily share all your skills, victories, and experiences. Every
+          bit of your journey matters to us!`}
         </p>
       </div>
       <div className="mb-6">
