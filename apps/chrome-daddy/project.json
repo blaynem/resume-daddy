@@ -1,0 +1,97 @@
+{
+  "name": "chrome-daddy",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/chrome-daddy/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/chrome-daddy",
+        "index": "apps/chrome-daddy/src/index.html",
+        "baseHref": "/",
+        "main": "apps/chrome-daddy/src/main.tsx",
+        "tsConfig": "apps/chrome-daddy/tsconfig.app.json",
+        "assets": [
+          "apps/chrome-daddy/src/favicon.ico",
+          "apps/chrome-daddy/src/assets",
+          "apps/chrome-daddy/src/manifest.json"
+        ],
+        "styles": ["apps/chrome-daddy/src/styles.css"],
+        "scripts": [],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/chrome-daddy/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/chrome-daddy/src/environments/environment.ts",
+              "with": "apps/chrome-daddy/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/webpack:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "chrome-daddy:build",
+        "hmr": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "chrome-daddy:build:development"
+        },
+        "production": {
+          "buildTarget": "chrome-daddy:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/chrome-daddy/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "chrome-daddy:build"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/chrome-daddy/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}

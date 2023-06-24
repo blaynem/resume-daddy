@@ -1,0 +1,11 @@
+{
+  "name": "Resume Daddy - Chrome Extension",
+  "description": "Chrome Extension for Resume Daddy",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Open"
+  },
+  "permissions": ["activeTab", "storage", "scripting"]
+}
