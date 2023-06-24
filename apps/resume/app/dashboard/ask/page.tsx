@@ -25,6 +25,11 @@ const options = [
     label: 'Questions',
     predictionType: TypeOfPrediction.QUESTION,
   },
+  {
+    value: 'resume-tailor',
+    label: 'Resume Tailor',
+    predictionType: TypeOfPrediction.RESUME_TAILOR,
+  },
 ];
 
 /**
@@ -88,8 +93,7 @@ export default function ResumesPage() {
           <p className="text-md font-semibold">What do you need help with?</p>
           <Select
             // Disabled for now, we only support questions
-            // disabled={submitting}
-            disabled
+            disabled={submitting}
             onChange={(e) => setQuestionType(e.target.value)}
             value={questionType}
             className="pt-0"

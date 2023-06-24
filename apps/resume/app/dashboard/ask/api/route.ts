@@ -5,11 +5,12 @@ import {
   TypeOfPrediction,
 } from '@libs/types';
 import { NextRequest, NextResponse } from 'next/server';
-import { questionAnswerPredict } from './controller';
+import { questionAnswerPredict, resumeTailorPredict } from './controller';
 import { supabaseRouter } from '../../../../clients/supabase';
 
 const typeOfPredictionToUrl = {
   [TypeOfPrediction.QUESTION]: questionAnswerPredict,
+  [TypeOfPrediction.RESUME_TAILOR]: resumeTailorPredict,
 };
 
 export async function POST(

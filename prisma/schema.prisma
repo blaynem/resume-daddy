@@ -135,4 +135,5 @@ enum SuggestionType {
 
 enum PredictionType {
   FREE_FORM_QUESTION
+  RESUME_TAILOR
 }

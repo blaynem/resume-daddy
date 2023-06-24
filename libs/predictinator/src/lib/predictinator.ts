@@ -7,15 +7,13 @@ import {
   experiencesPromptBuilder,
   questionPromptBuilder,
   resumeRewritePromptBuilder,
+  resumeTailorPromptBuilder,
 } from './prompts';
 import { gptTurboModel } from '../clients/openAI';
 import { jobs } from '@prisma/client';
 import { createPredictor } from './createPredictor';
 import { PredictinatorType } from '../types';
-import {
-  ResumeTailorPromptTemplateArgs,
-  resumeTailorPredict,
-} from './prompts/resumeTailor';
+import { ResumeTailorPromptTemplateArgs } from './prompts/resumeTailor';
 
 export type PredictinatorResponse =
   | {
@@ -132,7 +130,7 @@ export const Predictinator = (openAIApiKey: string): PredictinatorType => {
       createPredictor<ResumeTailorPromptTemplateArgs>(
         args,
         gptClient,
-        questionPromptBuilder
+        resumeTailorPromptBuilder
       ),
   };
 };

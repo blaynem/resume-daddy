@@ -5,7 +5,7 @@ import { createContextPrompt } from './helpers';
 import { ParsePrediction } from '../predictinator';
 
 const ResumeAnswerFormat = z.object({
-  answer: z.string().describe('The answer to the question:'),
+  answer: z.string().describe('A resume tailored to the job description:'),
 });
 
 type ResumeTailorPredictResponse = z.infer<typeof ResumeAnswerFormat>;
@@ -60,8 +60,10 @@ const resumeTailorPromptTemplate = async ({
     },
   ]);
   const startingPrompt = `
-You are writing a resume to emphasize skills relevant to a job description. Below is your resume and the job description.
-Please write a LaTeX document that formats a resume that emphasizes relevant skills and experiences to the job description. Only include experiences that are directly included in my resume context.`;
+     Job Experience: Contains separate sections within for each relevant job, each with bullet points detailing the experiences there that are relevant to the job description, 
+     Skills: detailing all skills that would be releavant to the current position, that emphasizes relevant skills and experiences to the job description, 
+      Education: detailing all education that would be relevant to the current position, that emphasizes relevant skills and experiences to the job description.
+     You are writing a resume to emphasize skills relevant to a job description. Below is your resume and the job description.  Only include experiences that are directly included in my resume context.`;
 
   const endingPrompt = ``;
 
@@ -75,11 +77,11 @@ Please write a LaTeX document that formats a resume that emphasizes relevant ski
       endingPrompt,
     },
   }).format({});
-
+  console.log(prompt);
   return prompt;
 };
 
-export const resumeTailorPredict = {
+export const resumeTailorPromptBuilder = {
   promptTemplate: resumeTailorPromptTemplate,
   parsePrediction: resumeParsePrediction,
 };
