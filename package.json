@@ -5,7 +5,8 @@
   "scripts": {
     "build:client": "npm run generate:prisma && nx build resume --prod",
     "generate:prisma": "npx prisma generate",
-    "generate:supabase": "node ./scripts/gen-types.js"
+    "generate:supabase": "node ./scripts/gen-types.js",
+    "seed:local": "ts-node ./prisma/seed.ts"
   },
   "private": true,
   "dependencies": {

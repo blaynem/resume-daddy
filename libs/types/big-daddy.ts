@@ -1,4 +1,18 @@
-export type PredictResponse = {
+import { PredictionType } from '@prisma/client';
+
+export type PredictResponseServer = {
+  data: {
+    user_id: string;
+    prediction: string;
+    question: string;
+    job_description: string;
+    resume: string;
+    predictionType: PredictionType;
+  } | null;
+  error?: string;
+};
+
+export type PredictResponseClient = {
   data: string | null;
   error?: string;
 };

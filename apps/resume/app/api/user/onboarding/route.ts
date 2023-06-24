@@ -20,7 +20,7 @@ export async function POST(
       throw new Error('Not authenticated');
     }
 
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findUnique({
       where: {
         email: onboardingData.email,
       },
