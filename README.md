@@ -95,8 +95,26 @@ npx supabase start
 npx prisma migrate dev
 # Generate the types
 yarn run generate:supabase
-# Close the supabase cli
+# To stop the supabase cli / docker instance
 npx supabase stop
+```
+
+**Note**: You will need to add the RLS policies any time you you blow away the database. So what we can do then is open the SQL editor in the Supabase Local Studio and copy / paste the [RLS-policies.sql](./prisma/RLS-policies.sql) file into it.
+
+Supabase Local Studio URL
+[http://localhost:54323/project](http://localhost:54323/project/default)
+
+Supabase Email Server URL
+[http://localhost:54324/monitor](http://localhost:54324/monitor)
+
+If you need to seed the local supabase db with some data, you can run the below command.
+Note: We can't seed the auth.users table, but that's fine since when a user confirms their email, if they already have a user matching the email in the db, it will just sign them in.
+
+2nd Note: This won't work right now because we don't have the auth.users table seeded. So we need to figure out how to seed that table.
+
+```bash
+# If you need to seed the local DB
+yarn seed:local
 ```
 
 ## Prisma Flow
