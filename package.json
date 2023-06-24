@@ -4,9 +4,11 @@
   "license": "MIT",
   "scripts": {
     "build:client": "npm run generate:prisma && nx build resume --prod",
+    "build:extension": "npm run --prefix ./apps/chrome-daddy build",
     "generate:prisma": "npx prisma generate",
     "generate:supabase": "node ./scripts/gen-types.js",
-    "seed:local": "ts-node ./prisma/seed.ts"
+    "seed:local": "ts-node ./prisma/seed.ts",
+    "serve:extension": "npm run --prefix ./apps/chrome-daddy dev"
   },
   "private": true,
   "dependencies": {
