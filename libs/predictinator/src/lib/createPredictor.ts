@@ -22,9 +22,11 @@ export const createPredictor = async <T>(
     const prompt = await promptTemplate(args);
     const predictResponse = await gptClient.call(prompt);
     const parsedPrediction = await parsePrediction(predictResponse);
+    console.log('parsedPrediction', parsedPrediction);
     if ('error' in parsedPrediction) {
       throw new Error(parsedPrediction.error);
     }
+
     return {
       prompt: prompt,
       prediction: parsedPrediction.prediction,

@@ -137,7 +137,7 @@ export const resumeTailorPredict = async (
   }
 };
 
-/** ALL BELOW HERE NEED THE PREDICTIOSN SAVED IN DB AS WELL */
+/** ALL BELOW HERE NEED THE PREDICTIONS SAVED IN DB AS WELL */
 
 // export const coverLetterPredict = async (
 //   body: PredictQuestionBody
