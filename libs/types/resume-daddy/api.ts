@@ -3,6 +3,7 @@ import { PredictionType } from '@prisma/client';
 export enum TypeOfPrediction {
   QUESTION = 'QUESTION',
   SINGLE_EXPERIENCE_ENTRY = 'SINGLE_EXPERIENCE_ENTRY',
+  COVER_LETTER = 'COVER_LETTER',
 }
 
 export type PredictResponseServer = {
@@ -49,6 +50,10 @@ export type PredictExperienceRequestBody = PredictRequestBody<{
   /**
    * The job description that the experience is being rewritten for
    */
+  targetJobDescription: string;
+}>;
+
+export type PredictCoverLetterRequestBody = PredictRequestBody<{
   targetJobDescription: string;
 }>;
 

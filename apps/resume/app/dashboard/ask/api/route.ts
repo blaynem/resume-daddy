@@ -31,7 +31,10 @@ export async function POST(
     }
 
     // Save prediction to db
-    await savePredictionToDb(predictQuestionResp.data);
+    const saveToDb = await savePredictionToDb(predictQuestionResp.data);
+    if (!saveToDb) {
+      throw new Error('Error saving prediction to db.');
+    }
 
     const predictionResp = { data: predictQuestionResp.data.prediction };
     return NextResponse.json(predictionResp);

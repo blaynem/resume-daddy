@@ -3,6 +3,7 @@ import {
   PredictQuestionRequestBody,
   TypeOfPrediction,
   PredictExperienceRequestBody,
+  PredictCoverLetterRequestBody,
 } from '@libs/types';
 
 /**
@@ -21,4 +22,13 @@ export function isExperienceRequestBody(
   body: PredictRequestBody<object>
 ): body is PredictExperienceRequestBody {
   return body.typeOfPrediction === TypeOfPrediction.SINGLE_EXPERIENCE_ENTRY;
+}
+
+/**
+ * Type guard for PredictExperienceRequestBody
+ */
+export function isCoverLetterRequestBody(
+  body: PredictRequestBody<object>
+): body is PredictCoverLetterRequestBody {
+  return body.typeOfPrediction === TypeOfPrediction.COVER_LETTER;
 }

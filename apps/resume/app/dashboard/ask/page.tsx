@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Divider, Select } from '@chakra-ui/react';
 import PredictQuestion from './predict-question';
 import PredictSingleExperience from './predict-single-experience';
+import PredictCoverLetter from './predict-cover-letter';
 
 type Options = {
   value: string;
@@ -25,10 +26,12 @@ const options: Options[] = [
     description: 'Help rewrite a job experience entry.',
     component: PredictSingleExperience,
   },
-  // {
-  //   value: 'cover-letter',
-  //   label: 'Cover Letter',
-  // },
+  {
+    value: 'cover-letter',
+    label: 'Cover Letter',
+    component: PredictCoverLetter,
+    description: 'Write a cover letter based on a job description.',
+  },
 ];
 
 /**

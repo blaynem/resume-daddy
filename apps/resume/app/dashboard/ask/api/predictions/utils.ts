@@ -1,5 +1,5 @@
 import prisma from '../../../../../clients/prisma';
-import { PredictionType } from '@prisma/client';
+import { PredictionType, Prisma } from '@prisma/client';
 
 /**
  * Saves a prediction to the database.
@@ -19,16 +19,24 @@ export const savePredictionToDb = async ({
   resume: string;
   predictionType: PredictionType;
 }) => {
-  return await prisma.predictions.create({
-    data: {
-      user_id,
-      prediction,
-      question,
-      job_description,
-      resume,
-      type: predictionType,
-    },
-  });
+  try {
+    return await prisma.predictions.create({
+      data: {
+        user_id,
+        prediction,
+        question,
+        job_description,
+        resume,
+        type: predictionType,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      return null;
+    }
+  }
+  return null;
 };
 
 export const findUserById = async (id: string) => {

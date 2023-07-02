@@ -1,10 +1,14 @@
 import { PredictRequestBody, PredictResponseServer } from '@libs/types';
-import { questionAnswerPredict } from './predictions/question-answer-predict';
-import { singleExperiencePredict } from './predictions/single-experience-predict';
 import {
-  isQuestionRequestBody,
+  isCoverLetterRequestBody,
   isExperienceRequestBody,
+  isQuestionRequestBody,
 } from './predictions/type-checks';
+import {
+  coverLetterPredict,
+  singleExperiencePredict,
+  questionAnswerPredict,
+} from './predictions';
 
 /**
  * Fires the prediction based on the type of prediction in the request body.
@@ -20,7 +24,13 @@ export const doPrediction = async (
     return singleExperiencePredict(body);
   }
 
-  throw new Error('Invalid type of prediction provided');
+  if (isCoverLetterRequestBody(body)) {
+    return coverLetterPredict(body);
+  }
+
+  throw new Error(
+    `Invalid type of prediction provided: ${body.typeOfPrediction}`
+  );
 };
 
 /** ALL BELOW HERE NEED THE PREDICTIOSN SAVED IN DB AS WELL */
