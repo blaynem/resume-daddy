@@ -40,7 +40,7 @@ export const coverLetterPredict = async (
       data: {
         user_id,
         prediction: response.prediction,
-        question: '',
+        question: 'Cover Letter',
         job_description: targetJobDescription,
         resume: parsedResume,
         predictionType: PredictionType.COVER_LETTER,

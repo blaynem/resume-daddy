@@ -38,7 +38,7 @@ export const singleExperiencePredict = async (
       data: {
         user_id,
         prediction: response.prediction,
-        question: '',
+        question: 'Rewrite Job Experience',
         job_description: targetJobDescription,
         resume: parseResumeForPrompts(userFetch.jobs),
         predictionType: PredictionType.SINGLE_EXPERIENCE_ENTRY,
