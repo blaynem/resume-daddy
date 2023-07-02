@@ -1,16 +1,8 @@
-import {
-  PredictQuestionBody,
-  PredictQuestionRequestBody,
-  PredictResponseClient,
-  TypeOfPrediction,
-} from '@libs/types';
+import { PredictRequestBody, PredictResponseClient } from '@libs/types';
 import { NextRequest, NextResponse } from 'next/server';
-import { questionAnswerPredict, savePredictionToDb } from './controller';
 import { supabaseRouter } from '../../../../clients/supabase';
-
-const typeOfPredictionToUrl = {
-  [TypeOfPrediction.QUESTION]: questionAnswerPredict,
-};
+import { savePredictionToDb } from './predictions/utils';
+import { doPrediction } from './controller';
 
 export async function POST(
   request: NextRequest
@@ -21,20 +13,17 @@ export async function POST(
       throw new Error('No user found');
     }
 
-    const reqBody = (await request.json()) as PredictQuestionRequestBody;
-    // Get the predict action
-    const predictAction = typeOfPredictionToUrl[reqBody.typeOfPrediction];
-    if (!predictAction) {
-      throw new Error('No predict action found');
+    // We always require the user_id and type of prediction to be passed in.
+    const reqBody = (await request.json()) as PredictRequestBody<object>;
+    if (user.id !== reqBody.user_id) {
+      throw new Error('User id does not match');
     }
 
-    const predictBody: PredictQuestionBody = {
-      user_id: user.id,
-      jobDescription: reqBody.jobDescription,
-      question: reqBody.question,
-      job_id: reqBody.job_id,
-    };
-    const predictQuestionResp = await predictAction(predictBody);
+    if (!reqBody.typeOfPrediction) {
+      throw new Error('No type of prediction provided');
+    }
+
+    const predictQuestionResp = await doPrediction(reqBody);
 
     // If the req fails, throw an error
     if (predictQuestionResp.error || !predictQuestionResp.data) {

@@ -135,4 +135,5 @@ enum SuggestionType {
 
 enum PredictionType {
   FREE_FORM_QUESTION
+  SINGLE_EXPERIENCE_ENTRY
 }
