@@ -3,9 +3,8 @@
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "build:client": "npm run generate:prisma && nx build resume --prod",
-    "generate:prisma": "npx prisma generate",
     "generate:supabase": "node ./scripts/gen-types.js",
+    "vercel-build": "npx prisma generate && npx prisma migrate deploy && nx build resume --prod",
     "seed:local": "ts-node ./prisma/seed.ts"
   },
   "private": true,
