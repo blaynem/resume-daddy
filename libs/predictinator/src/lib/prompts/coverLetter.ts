@@ -83,12 +83,21 @@ const coverLetterPromptTemplate = async ({
       name: 'My Resume',
       value: resume,
     },
+    {
+      name: 'Target Job Description',
+      value: jobDescription,
+    },
   ]);
   const startingPrompt = `
-Write a cover letter for the job in the job description by matching qualifications from my resume to the job description provided.
-Keep the cover letter very short, three paragraphs at most. Keep the language relatively casual. Only include experiences that are directly included in my resume context.`;
+You are writing a cover letter for the role in the provided Target Job Description, by matching qualifications to your resume.
+Keep the cover letter very short, three paragraphs at most. Keep the language relatively casual.
+Please write the cover letter in the context of the provided job description and your resume.
 
-  const endingPrompt = `Write a cover letter for this Job Description:\n${jobDescription}`;
+DO NOT include experiences that ARE NOT directly included in the resume context.
+If there are no experiences in the resume that match the job description, then make an attempt to draw parallels to the job description.
+If none of this is possible, then mention the job description in the cover letter and explain why you may be a good fit.`;
+
+  const endingPrompt = `Cover Letter:\n`;
 
   const prompt = await new PromptTemplate({
     template: `{startingPrompt}\n{context}\n{format_instructions}\n{endingPrompt}`,
