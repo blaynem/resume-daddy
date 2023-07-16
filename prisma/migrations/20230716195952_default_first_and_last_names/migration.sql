@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "user" ALTER COLUMN "first_name" SET DEFAULT 'FIRST',
+ALTER COLUMN "last_name" SET DEFAULT 'LAST';

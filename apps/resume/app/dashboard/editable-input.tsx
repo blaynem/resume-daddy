@@ -35,6 +35,7 @@ export const EditableInput = ({
   value,
   isTextarea,
   header,
+  hintText,
   isEditMode,
   placeholder,
   disabled,
@@ -44,6 +45,7 @@ export const EditableInput = ({
   isEditMode: boolean;
   value: string;
   header: string;
+  hintText?: string;
   isTextarea?: boolean;
   placeholder?: string;
   disabled?: boolean;
@@ -74,16 +76,19 @@ export const EditableInput = ({
         )}
       </div>
       {isEditMode ? (
-        <FieldComponent
-          // Prevents the click from bubbling up to the parent button
-          onClick={(e) => e.stopPropagation()}
-          type="text"
-          disabled={disabled}
-          className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
-          value={value}
-          onChange={handleChange}
-          placeholder={placeholder}
-        />
+        <>
+          <FieldComponent
+            type="text"
+            disabled={disabled}
+            className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+            value={value}
+            onChange={handleChange}
+            placeholder={placeholder}
+          />
+          {hintText && (
+            <p className="mt-1 text-sm leading-6 text-gray-600">{hintText}</p>
+          )}
+        </>
       ) : (
         <ul className="px-3 py-1.5 h-min-6">
           {!value && (

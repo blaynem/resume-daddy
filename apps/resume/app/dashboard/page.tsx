@@ -180,8 +180,8 @@ export default function Dashboard() {
           Profile
         </h2>
         <p className="text-sm leading-6 text-gray-500">
-          All of the job information you provide is used to help guide you when
-          filling out job applications.
+          {`All of the job information you provide is used to help guide you when
+          filling out job applications. Don't worry about formatting, feel free to explain like you would to a friend.`}
         </p>
       </header>
       <div className="absolute top-0 right-0">
@@ -217,6 +217,8 @@ export default function Dashboard() {
       <Accordion defaultIndex={[0]} allowMultiple>
         {tempJobsEdits.map((job, index) => (
           <AccordionItem key={job.id}>
+            {/* TODO: Theis button should not be the input. It should just be text.
+            It causes too many issues with expanding etc */}
             <AccordionButton className="pb-0 px-2">
               <EditableInput
                 isEditMode={isEditMode}
@@ -243,6 +245,7 @@ export default function Dashboard() {
               <EditableInput
                 isEditMode={isEditMode}
                 header="Summary"
+                hintText="Summarize what you did in this role"
                 value={job.summary}
                 isTextarea
                 onChange={(value) => {
@@ -253,6 +256,7 @@ export default function Dashboard() {
               <EditableInput
                 isEditMode={isEditMode}
                 header="Experience"
+                hintText="What sort of experience did you have in this role?"
                 value={job.experience || ''}
                 isTextarea
                 onChange={(value) => {
@@ -263,6 +267,7 @@ export default function Dashboard() {
               <EditableInput
                 isEditMode={isEditMode}
                 header="Skills"
+                hintText="What sort of skills did you use in this role?"
                 value={job.temp_skills || ''}
                 isTextarea
                 onChange={(value) => {
@@ -275,6 +280,8 @@ export default function Dashboard() {
         ))}
         {newJobs.map((job, index) => (
           <AccordionItem key={job.id}>
+            {/* TODO: Theis button should not be the input. It should just be text.
+            It causes too many issues with expanding etc */}
             <AccordionButton key={index} className="pb-0 relative">
               <div className="absolute right-0 top-0">
                 <IconButton
@@ -314,6 +321,7 @@ export default function Dashboard() {
               <EditableInput
                 isEditMode
                 header="Summary"
+                hintText="Summarize what you did in this role"
                 value={job.summary}
                 isTextarea
                 onChange={(value) => {
@@ -324,6 +332,7 @@ export default function Dashboard() {
               <EditableInput
                 isEditMode
                 header="Experience"
+                hintText="What sort of experience did you have in this role?"
                 value={job.experience || ''}
                 isTextarea
                 onChange={(value) => {
@@ -334,6 +343,7 @@ export default function Dashboard() {
               <EditableInput
                 isEditMode
                 header="Skills"
+                hintText="What sort of skills did you use in this role?"
                 value={job.temp_skills || ''}
                 isTextarea
                 onChange={(value) => {
