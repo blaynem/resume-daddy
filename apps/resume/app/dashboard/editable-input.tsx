@@ -1,4 +1,3 @@
-import { TrashIcon } from '@heroicons/react/24/outline';
 import { IconType } from '@libs/types';
 import React from 'react';
 
@@ -10,7 +9,7 @@ export const IconButton = ({
   height = 'h-6',
   width = 'w-6',
 }: {
-  onClick: () => void;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   iconType: IconType;
   iconSrText: string;
   className?: string;
@@ -40,7 +39,6 @@ export const EditableInput = ({
   placeholder,
   disabled,
   onChange,
-  onDeleteClick,
 }: {
   isEditMode: boolean;
   value: string;
@@ -50,7 +48,6 @@ export const EditableInput = ({
   placeholder?: string;
   disabled?: boolean;
   onChange: (value: string) => void;
-  onDeleteClick?: () => void;
 }) => {
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -66,14 +63,6 @@ export const EditableInput = ({
     <div className="mb-4 w-full">
       <div className="mb-0 flex">
         <p className="text-md font-semibold">{header}</p>
-        {isEditMode && onDeleteClick && (
-          <IconButton
-            padding="p-0 ml-2"
-            iconSrText="Delete Job"
-            iconType={TrashIcon as IconType}
-            onClick={onDeleteClick}
-          />
-        )}
       </div>
       {isEditMode ? (
         <>
