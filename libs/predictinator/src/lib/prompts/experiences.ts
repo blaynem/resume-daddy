@@ -18,6 +18,10 @@ export type ExperiencesTemplateArgs = {
    * Individiual job object
    */
   job: jobs;
+  /**
+   * User pasted job description they are applying to.
+   */
+  jobDescription: string;
 };
 type ExperiencesPredictResponse = z.infer<typeof questionAnswerFormat>;
 
@@ -46,9 +50,8 @@ const experiencesParsePrediction = async (
  */
 const experiencesPromptTemplate = async ({
   job,
-}: {
-  job: jobs;
-}): Promise<string> => {
+  jobDescription,
+}: ExperiencesTemplateArgs): Promise<string> => {
   const context = createContextPrompt([
     {
       name: 'Job Summary',
@@ -58,13 +61,17 @@ const experiencesPromptTemplate = async ({
       name: 'Job Experiences',
       value: job.experience || '',
     },
+    {
+      name: 'New Job Description',
+      value: jobDescription,
+    },
   ]);
   // NEED TO CHANGE THIS PROMPT
   // THE PROBLEM IS THAT
   // We are asking for the STAR method so its giving us back an object like this:
   // { description, STAR, situation, task, action, result }.
   const startingPrompt = `I want to write a resume Experiences section based on the STAR method.
-Help me improve my resumes Job Experiences by rephrasing and clarifying any information that is unclear.
+Help me improve my resumes Job Experiences by rephrasing and clarifying any information that is unclear, based on the the context of the new job description.
 Please embellish the details as much as you see fit, but only include experiences that are directly included in my the Contexts.`;
 
   const prompt = await new PromptTemplate({

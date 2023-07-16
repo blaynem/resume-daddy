@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "PredictionType" ADD VALUE 'SINGLE_EXPERIENCE_ENTRY';
