@@ -3,7 +3,6 @@ import Navbar from './navbar';
 import { Providers } from './providers';
 import SupabaseProvider from '../clients/supabase-provider';
 import { supabaseSever } from '../clients/supabase';
-import FancyBG from '../wrappers/fancy-bg';
 
 export const metadata = {
   title: 'Resume Daddy',
@@ -19,14 +18,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <FancyBG>
-          <SupabaseProvider session={session}>
-            <Providers>
-              <Navbar />
-              {children}
-            </Providers>
-          </SupabaseProvider>
-        </FancyBG>
+        <SupabaseProvider session={session}>
+          <Providers>
+            <Navbar />
+            {children}
+          </Providers>
+        </SupabaseProvider>
       </body>
     </html>
   );
