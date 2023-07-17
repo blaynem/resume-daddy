@@ -1,7 +1,7 @@
 import FancyBG from '../../wrappers/fancy-bg';
 
 export const metadata = {
-  title: 'How To | Resume Daddy',
+  title: 'How it works | Resume Daddy',
   description: 'How it works',
 };
 

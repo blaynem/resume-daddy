@@ -6,6 +6,7 @@ import {
   CheckIcon,
   PencilIcon,
   PlusIcon,
+  TrashIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { deepEqual } from '@libs/helpers';
@@ -77,7 +78,7 @@ export default function Dashboard() {
       user_id: user?.id,
       user_job_order: tempJobsEdits.length,
     };
-    setNewJobs([addNewJob, ...newJobs]);
+    setNewJobs([...newJobs, addNewJob]);
   };
 
   const cancelEditMode = () => {
@@ -180,24 +181,32 @@ export default function Dashboard() {
           Profile
         </h2>
         <p className="text-sm leading-6 text-gray-500">
-          All of the job information you provide is used to help guide you when
-          filling out job applications.
+          {`All of the job information you provide is used to help guide you when
+          filling out job applications. Don't worry about formatting, feel free to explain like you would to a friend.`}
         </p>
       </header>
       <div className="absolute top-0 right-0">
         {!isEditMode ? (
-          <>
+          <div className="flex">
             <IconButton
               iconSrText="Edit Fields"
               iconType={PencilIcon as IconType}
               onClick={changeEditMode}
             />
-            <IconButton
-              iconSrText="Add Job"
-              iconType={PlusIcon as IconType}
-              onClick={addNewJob}
-            />
-          </>
+            <div
+              className={
+                !newJobs.length && !dbJobs.length
+                  ? `animate-[bounce_1s_infinite_2000ms]`
+                  : ''
+              }
+            >
+              <IconButton
+                iconSrText="Add Job"
+                iconType={PlusIcon as IconType}
+                onClick={addNewJob}
+              />
+            </div>
+          </div>
         ) : (
           <>
             <IconButton
@@ -217,7 +226,22 @@ export default function Dashboard() {
       <Accordion defaultIndex={[0]} allowMultiple>
         {tempJobsEdits.map((job, index) => (
           <AccordionItem key={job.id}>
-            <AccordionButton className="pb-0 px-2">
+            <div className="flex justify-between">
+              <AccordionButton className="px-2">
+                <p className="text-md font-semibold">{`${
+                  job.title || 'Title'
+                } @ ${job.company_name || 'Company'}`}</p>
+              </AccordionButton>
+              {isEditMode && (
+                <IconButton
+                  iconSrText="Delete Job"
+                  iconType={TrashIcon as IconType}
+                  onClick={() => onJobDelete(job.id)}
+                />
+              )}
+            </div>
+
+            <AccordionPanel className="pb-2 px-2">
               <EditableInput
                 isEditMode={isEditMode}
                 header="Job Title"
@@ -226,11 +250,7 @@ export default function Dashboard() {
                   const newJob = { ...job, title: value };
                   editJob(index, newJob);
                 }}
-                onDeleteClick={() => onJobDelete(job.id)}
               />
-            </AccordionButton>
-
-            <AccordionPanel className="pt-0 px-2">
               <EditableInput
                 isEditMode={isEditMode}
                 header="Company Name"
@@ -243,6 +263,7 @@ export default function Dashboard() {
               <EditableInput
                 isEditMode={isEditMode}
                 header="Summary"
+                hintText="Summarize what you did in this role"
                 value={job.summary}
                 isTextarea
                 onChange={(value) => {
@@ -253,6 +274,7 @@ export default function Dashboard() {
               <EditableInput
                 isEditMode={isEditMode}
                 header="Experience"
+                hintText="What sort of experience did you have in this role?"
                 value={job.experience || ''}
                 isTextarea
                 onChange={(value) => {
@@ -263,6 +285,7 @@ export default function Dashboard() {
               <EditableInput
                 isEditMode={isEditMode}
                 header="Skills"
+                hintText="What sort of skills did you use in this role?"
                 value={job.temp_skills || ''}
                 isTextarea
                 onChange={(value) => {
@@ -275,21 +298,27 @@ export default function Dashboard() {
         ))}
         {newJobs.map((job, index) => (
           <AccordionItem key={job.id}>
-            <AccordionButton key={index} className="pb-0 relative">
-              <div className="absolute right-0 top-0">
+            <div className="flex justify-between">
+              <AccordionButton key={index} className="px-2">
+                <p className="text-md font-semibold">{`New Entry: ${
+                  job.title || 'Title'
+                } @ ${job.company_name || 'Company'}`}</p>
+              </AccordionButton>
+              <div className="flex">
                 <IconButton
                   iconSrText="Cancel"
                   iconType={XMarkIcon as IconType}
                   onClick={() => onNewJobDelete(index)}
-                  padding="p-0 pr-1 pt-1"
                 />
                 <IconButton
                   iconSrText="Save"
                   iconType={CheckIcon as IconType}
                   onClick={() => onNewJobSave(index)}
-                  padding="p-0 pr-4 pt-1"
                 />
               </div>
+            </div>
+
+            <AccordionPanel className="pb-2 px-2">
               <EditableInput
                 isEditMode
                 header="Job Title"
@@ -299,9 +328,6 @@ export default function Dashboard() {
                   onEditNewJob(index, newJob);
                 }}
               />
-            </AccordionButton>
-
-            <AccordionPanel>
               <EditableInput
                 isEditMode
                 header="Company Name"
@@ -314,6 +340,7 @@ export default function Dashboard() {
               <EditableInput
                 isEditMode
                 header="Summary"
+                hintText="Summarize what you did in this role"
                 value={job.summary}
                 isTextarea
                 onChange={(value) => {
@@ -324,6 +351,7 @@ export default function Dashboard() {
               <EditableInput
                 isEditMode
                 header="Experience"
+                hintText="What sort of experience did you have in this role?"
                 value={job.experience || ''}
                 isTextarea
                 onChange={(value) => {
@@ -334,6 +362,7 @@ export default function Dashboard() {
               <EditableInput
                 isEditMode
                 header="Skills"
+                hintText="What sort of skills did you use in this role?"
                 value={job.temp_skills || ''}
                 isTextarea
                 onChange={(value) => {

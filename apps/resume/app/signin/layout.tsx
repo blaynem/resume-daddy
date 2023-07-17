@@ -1,8 +1,8 @@
 import FancyBG from '../../wrappers/fancy-bg';
 
 export const metadata = {
-  title: 'Onboarding | Resume Daddy',
-  description: 'Onboarding',
+  title: 'Sign in | Resume Daddy',
+  description: 'Sign in',
 };
 
 export default function RootLayout({

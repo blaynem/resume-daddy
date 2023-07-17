@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'Resumes | Resume Daddy',
-  description: 'Resumes',
+  title: 'Ask | Resume Daddy',
+  description: 'Get help with your job application',
 };
 
 export default function RootLayout({
